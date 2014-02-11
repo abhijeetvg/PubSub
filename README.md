@@ -1,4 +1,4 @@
-PubSub
+﻿PubSub
 ======
 
 ## Overview
@@ -11,8 +11,11 @@ Steps:
 
 * Install pom: `mvn install`
 * Compile: `mvn compile`
+* Create package: `mvn package`
+  * This will create tar distribution in `dist/target/`
+
 * Generate eclipse project files: `mvn eclipse:eclipse`
-* This project can be now imported in eclipse.
+  * This project can be now imported in eclipse.
 
 
 

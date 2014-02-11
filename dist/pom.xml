@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>edu.umn.pubsub</groupId>
+    <artifactId>PubSub</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <groupId>edu.umn.pubsub</groupId>
+  <artifactId>dist</artifactId>
+  <!--version>1.0-SNAPSHOT</version-->
+  <name>dist</name>
+  <packaging>pom</packaging>
+  <url>http://maven.apache.org</url>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>edu.umn.pubsub.client</groupId>
+      <artifactId>client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>edu.umn.pubsub.server</groupId>
+      <artifactId>server</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+  </dependencies>
+  
+   <build>
+      <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                        <delete dir="target/pubsub-${project.version}"/>
+                        <delete dir="target/pubsub-${project.version}.tar.gz"/>
+
+                        <mkdir dir="target/pubsub-${project.version}"/>
+                        <mkdir dir="target/pubsub-${project.version}/lib"/>
+                        <mkdir dir="target/pubsub-${project.version}/bin"/>
+
+                        <copy todir="target/pubsub-${project.version}" includeEmptyDirs="false" flatten="false">
+                          <fileset dir="../">
+                            <include name="**/*" />
+                            <exclude name="build/**" />
+                            <exclude name="**/target/**" />
+                            <exclude name=".git/**" />
+                            <exclude name="tags" />
+                            <exclude name="**/.project" />
+                            <exclude name="**/.classpath" />
+                            <exclude name="**/.gitignore" />
+                            <exclude name="**/dist/**" />
+                          </fileset>
+                        </copy>
+
+                        <copy todir="target/pubsub-${project.version}" includeEmptyDirs="false" flatten="false">
+                          <fileset dir="../client/target">
+                            <include name="*.jar" />
+                          </fileset>
+                          <fileset dir="../server/target">
+                            <include name="*.jar" />
+                          </fileset>
+                          <fileset dir="../common/target">
+                            <include name="*.jar" />
+                          </fileset>
+                        </copy>
+                        
+                        <copy todir="target/pubsub-${project.version}/bin" includeEmptyDirs="false" flatten="false">
+                          <fileset dir="src/bin">
+                            <include name="**" />
+                          </fileset>
+                        </copy>
+
+                        <tar destfile="target/pubsub-${project.version}.tar.gz" compression="gzip">
+                        <tarfileset dir="target/pubsub-${project.version}" prefix="pubsub-${project.version}">
+                          <include name="**/*"/>
+                        </tarfileset>
+                        </tar>
+
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+ </build>
+  
+  
+</project>

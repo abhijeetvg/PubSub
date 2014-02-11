@@ -26,6 +26,35 @@
     <module>client</module>
     <module>server</module>
     <module>common</module>
+    <module>dist</module>
   </modules>
+
+<dependencyManagement>
+  <dependencies>
+    <!--dependency>
+      <groupId>edu.umn.pubsub.common</groupId>
+      <artifactId>common</artifactId>
+      <version>${project.version}</version>
+    </dependency-->
+
+    <dependency>
+      <groupId>edu.umn.pubsub.server</groupId>
+      <artifactId>server</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.umn.pubsub.client</groupId>
+      <artifactId>client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.umn.pubsub</groupId>
+      <artifactId>dist</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
 
 </project>
