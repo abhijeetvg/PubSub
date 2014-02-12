@@ -1,4 +1,4 @@
-package edu.umn.pubsub.common.content;
+package edu.umn.pubsub.common.constants;
 
 /**
  * All the topics supported by the system.

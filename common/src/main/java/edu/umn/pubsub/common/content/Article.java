@@ -1,7 +1,7 @@
 package edu.umn.pubsub.common.content;
 
-import javax.xml.bind.Validator;
-
+import edu.umn.pubsub.common.constants.ArticleConstants;
+import edu.umn.pubsub.common.constants.Type;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
@@ -34,9 +34,10 @@ public final class Article {
 	
 	public Article(String articleStr) throws IllegalArgumentException{
 		if(!ContentValidator.isValidArticle(articleStr)) {
+			// TODO prashant remove hard coding
 			throw new IllegalArgumentException("Invalid article structure");
 		}
-		String[] split = articleStr.split(";");
+		String[] split = articleStr.split(ArticleConstants.ARTICLE_DELIMITER);
 		new Article(Type.getType(split[0]), split[1], split[2], split[3]);
 	}
 	
@@ -54,6 +55,14 @@ public final class Article {
 
 	public String getContents() {
 		return contents;
+	}
+	
+	@Override 
+	public String toString() {
+		return type + ArticleConstants.ARTICLE_DELIMITER + 
+				originator + ArticleConstants.ARTICLE_DELIMITER + 
+				org + ArticleConstants.ARTICLE_DELIMITER + 
+				contents;
 	}
 
 }
