@@ -1,26 +1,23 @@
-package edu.umn.pubsub.common.client;
-
-import java.lang.reflect.Constructor;
+package edu.umn.pubsub.common.server;
 
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
- * Class for storing the attributes of client
+ * Class for storing the attributes of server
  * @author prashant
  *
  */
-public final class Client {
+public final class ServerInfo {
 	private String ip;
 	private int port;
 	
 	/**
-	 * This {@link Constructor} throws {@link IllegalArgumentException} if the ip is not valid.
-	 * 
+	 * This will constructor will {@link IllegalArgumentException} if the ip is not valid
 	 * @param ip
 	 * @param port
 	 * @throws IllegalArgumentException
 	 */
-	public Client(String ip, int port) throws IllegalArgumentException{
+	public ServerInfo(String ip, int port) throws IllegalArgumentException{
 		if(!ContentValidator.isValidIp(ip)) {
 			throw new IllegalArgumentException("Invalid Ip" + ip);
 		}
