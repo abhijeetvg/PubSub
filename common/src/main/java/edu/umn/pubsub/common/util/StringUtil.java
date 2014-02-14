@@ -1,8 +1,11 @@
 package edu.umn.pubsub.common.util;
 
+import java.util.StringTokenizer;
+
 /**
  * General util methods for string manipulation
  * @author prashant
+ * @author Abhijeet
  *
  */
 public final class StringUtil {
@@ -17,4 +20,9 @@ public final class StringUtil {
 	public static boolean isEmpty(String string) {
 		return string == null || string.isEmpty();
 	}
+	
+	public static String getCmdPrefix(String string) {
+		return string.split("\\W", 1)[0];
+	}
+	
 }
