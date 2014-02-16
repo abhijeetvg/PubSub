@@ -6,6 +6,10 @@ import java.rmi.server.UnicastRemoteObject;
 import edu.umn.pubsub.common.client.ClientInfo;
 import edu.umn.pubsub.common.content.Article;
 import edu.umn.pubsub.common.content.Subscription;
+import edu.umn.pubsub.common.exception.IllegalArticleException;
+import edu.umn.pubsub.common.exception.IllegalArticleTypeException;
+import edu.umn.pubsub.common.exception.IllegalIPException;
+import edu.umn.pubsub.common.exception.IllegalSubscriptionException;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.server.ServerInfo;
 
@@ -49,22 +53,38 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 	
 	@Override
 	public boolean Join(String ip, int port) throws RemoteException {
-		return clientManager.Join(new ClientInfo(ip, port));
+		try {
+			return clientManager.Join(new ClientInfo(ip, port));
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		}
 	}
 
 	@Override
 	public boolean JoinServer(String ip, int port) throws RemoteException {
-		return serverManager.JoinServer(new ServerInfo(ip, port));
+		try{
+			return serverManager.JoinServer(new ServerInfo(ip, port));
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		}
 	}
 
 	@Override
 	public boolean Leave(String ip, int port) throws RemoteException {
-		return clientManager.Leave(new ClientInfo(ip, port));
+		try{
+			return clientManager.Leave(new ClientInfo(ip, port));
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		}
 	}
 
 	@Override
 	public boolean LeaveServer(String ip, int port) throws RemoteException {
-		return serverManager.LeaveServer(new ServerInfo(ip,port));
+		try{
+			return serverManager.LeaveServer(new ServerInfo(ip,port));
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		}
 	}
 
 	@Override
@@ -75,24 +95,56 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 	@Override
 	public boolean Publish(String ip, int port, String article)
 			throws RemoteException {
-		return clientManager.Publish(new ClientInfo(ip,port), new Article(article));
+		try {
+			return clientManager.Publish(new ClientInfo(ip,port), new Article(article));
+		} catch (IllegalArticleException e) {
+			throw new RemoteException("Invalid Article", e); 
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		} catch (IllegalArticleTypeException e) {
+			throw new RemoteException("Invalid Article Type",e);
+		}
 	}
 
 	@Override
 	public boolean PublishServer(String ip, int port, String article)
 			throws RemoteException {
-		return serverManager.PublishServer(new ServerInfo(ip, port), new Article(article));
+		try {
+			return serverManager.PublishServer(new ServerInfo(ip, port), new Article(article));
+		} catch (IllegalArticleException e) {
+			throw new RemoteException("Invalid Article", e); 
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		} catch (IllegalArticleTypeException e) {
+			throw new RemoteException("Invalid Article Type",e);
+		}
 	}
 
 	@Override
 	public boolean Subscribe(String ip, int port, String subscription)
 			throws RemoteException {
-		return clientManager.Subscribe(new ClientInfo(ip, port), new Subscription(subscription));
+		try {
+			return clientManager.Subscribe(new ClientInfo(ip, port), new Subscription(subscription));
+		} catch (IllegalSubscriptionException e) {
+			throw new RemoteException("Invalid Subscription",e);
+		} catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		} catch (IllegalArticleTypeException e) {
+			throw new RemoteException("Invalid Article Type",e);
+		}
 	}
 
 	@Override
 	public boolean Unsubscribe(String ip, int port, String subscription)
 			throws RemoteException {
-		return clientManager.Unsubscribe(new ClientInfo(ip,port), new Subscription(subscription));
+		try {
+			return clientManager.Unsubscribe(new ClientInfo(ip,port), new Subscription(subscription));
+		} catch (IllegalSubscriptionException e) {
+			throw new RemoteException("Invalid Subscription", e);
+		}catch (IllegalIPException e) {
+			throw new RemoteException("Invalid IP",e);
+		} catch (IllegalArticleTypeException e) {
+			throw new RemoteException("Invalid Article Type",e);
+		}
 	}
 }
