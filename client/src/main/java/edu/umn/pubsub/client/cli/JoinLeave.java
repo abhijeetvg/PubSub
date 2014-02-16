@@ -4,7 +4,10 @@ import java.rmi.RemoteException;
 
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
+import edu.umn.pubsub.client.udp.UDPClientData;
 import edu.umn.pubsub.common.rmi.Communicate;
+import edu.umn.pubsub.common.udp.UDPData;
+import edu.umn.pubsub.common.udp.UDPServer;
 
 /**
  * Used to invoke Join and Leave RMI method calls. Method calls that this command
@@ -49,6 +52,13 @@ public class JoinLeave extends BaseCommand {
 			throw new ClientNullException(CommandConstants.ERR_RMI_CLIENT_NULL);
 		}
 		
+		//Instantiate UDP server to handle these requests
+		if (cmdType == CommandConstants.DO_COMMAND) {
+			UDPData udpData = new UDPClientData();
+			UDPServer.getUDPServer(Integer.parseInt(getArgument(ARG_PORT)), udpData)
+				.start();
+		}
+
 		if (isServerCall) {
 			if (cmdType == CommandConstants.DO_COMMAND) {
 				return client.JoinServer(getArgument(ARG_HOST)

@@ -3,6 +3,8 @@ package edu.umn.pubsub.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,6 +19,7 @@ import edu.umn.pubsub.client.exceptions.ClientNullException;
 import edu.umn.pubsub.client.exceptions.IllegalCommandException;
 import edu.umn.pubsub.common.constants.RMIConstants;
 import edu.umn.pubsub.common.rmi.Communicate;
+import edu.umn.pubsub.common.udp.PrintLock;
 
 /**
  * RMI Client, shell interface.
@@ -29,7 +32,7 @@ public class Client {
 	CommandFactory cmdFactory;
 	Communicate client;
 	
-	private static final String CMD_PROMPT = "Client-1.0$ ";
+	private static final String CMD_PROMPT = "PubSub-Client-1.0$ ";
 	private static final String GOOD_BYE_MSG = "Good Bye! ";
 
 	public Client(Communicate client) {
@@ -70,25 +73,30 @@ public class Client {
 	    String cmd;
 	    
 	    try {
-	    	
-	    	System.out.println(CMD_PROMPT);
-	    	
-			while ((cmd = in.readLine()) != null) {
-				
-				if (cmd.isEmpty() || cmd.startsWith("#")) {
-					System.out.println(CMD_PROMPT);
-					continue;
+
+	    	//TODO: Improve; this makes it slow but for now needs to synchronized with
+	    	//UDP thread printing data.
+	    	synchronized (PrintLock.printLock) {
+	    		
+				System.out.print(CMD_PROMPT);
+
+				while ((cmd = in.readLine()) != null) {
+
+					if (cmd.isEmpty() || cmd.startsWith("#")) {
+						System.out.print(CMD_PROMPT);
+						continue;
+					}
+
+					if (cmd.trim().equalsIgnoreCase("exit")
+							|| cmd.trim().equalsIgnoreCase("quit")) {
+						System.out.println(GOOD_BYE_MSG);
+						break;
+					}
+
+					executeCmd(cmd);
+
+					System.out.print(CMD_PROMPT);
 				}
-				
-				if (cmd.trim().equalsIgnoreCase("exit") 
-						|| cmd.trim().equalsIgnoreCase("quit")) {
-					System.out.println(GOOD_BYE_MSG);
-					break;
-				}
-				
-				executeCmd(cmd);
-				
-				System.out.println(CMD_PROMPT);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -102,15 +110,11 @@ public class Client {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (null == System.getSecurityManager()) {
-			System.setSecurityManager(new SecurityManager());
-		}
-		
-		Registry registry;
+
 		try {
-			registry = LocateRegistry.getRegistry(args[0]);
-			Communicate client = (Communicate) registry
-					.lookup(RMIConstants.PUB_SUB_SERVICE);
+
+			Communicate client = (Communicate) Naming.lookup("rmi://" + args[0] + "/" 
+					+ RMIConstants.PUB_SUB_SERVICE);
 			
 			Client shell = new Client(client);
 			shell.startShell();
@@ -119,6 +123,9 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

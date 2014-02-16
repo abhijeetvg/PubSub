@@ -22,7 +22,7 @@ public final class StringUtil {
 	}
 	
 	public static String getCmdPrefix(String string) {
-		return string.split("\\W", 1)[0];
+		return string.split(" ")[0];
 	}
 	
 }

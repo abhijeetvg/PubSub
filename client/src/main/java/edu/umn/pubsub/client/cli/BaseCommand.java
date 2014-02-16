@@ -16,7 +16,7 @@ public abstract class BaseCommand {
 	private String[] arguments;
 	
 	public BaseCommand(String cmd) {
-		this.arguments = cmd.split("\\W");
+		this.arguments = cmd.split(" ");
 	}
 	
 	/**

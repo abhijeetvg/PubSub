@@ -27,7 +27,7 @@ public class CommandFactory {
 			throws IllegalCommandException {
 		
 		String prefix = StringUtil.getCmdPrefix(cmd).trim();
-		
+
 		if (prefix.equalsIgnoreCase(JOIN_PREFIX)) {
 			return new JoinLeave(cmd, CommandConstants.DO_COMMAND);
 		} else if (prefix.equalsIgnoreCase(LEAVE_PREFIX)) {
