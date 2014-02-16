@@ -1,5 +1,6 @@
 package edu.umn.pubsub.common.server;
 
+import edu.umn.pubsub.common.exception.IllegalIPException;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
@@ -17,9 +18,9 @@ public final class ServerInfo {
 	 * @param port
 	 * @throws IllegalArgumentException
 	 */
-	public ServerInfo(String ip, int port) throws IllegalArgumentException{
+	public ServerInfo(String ip, int port) throws IllegalIPException{
 		if(!ContentValidator.isValidIp(ip)) {
-			throw new IllegalArgumentException("Invalid Ip" + ip);
+			throw new IllegalIPException("Invalid Ip" + ip);
 		}
 		this.ip = ip;
 		this.port = port;

@@ -2,6 +2,8 @@ package edu.umn.pubsub.common.content;
 
 import edu.umn.pubsub.common.constants.ArticleConstants;
 import edu.umn.pubsub.common.constants.Type;
+import edu.umn.pubsub.common.exception.IllegalArticleException;
+import edu.umn.pubsub.common.exception.IllegalArticleTypeException;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
@@ -16,29 +18,18 @@ public final class Article {
 	private String org;
 	private String contents;
 	
-	/**
-	 * This constructor throws {@link IllegalArgumentException} if contents are not having valid structure.
-	 * 
-	 * @param type
-	 * @param originator
-	 * @param org
-	 * @param contents
-	 * @throws IllegalArgumentException
-	 */
-	private Article(Type type, String originator, String org, String contents){
-		this.type = type;
-		this.originator = originator;
-		this.org = org;
-		this.contents = contents;
-	}
-	
-	public Article(String articleStr) throws IllegalArgumentException{
+	public Article(String articleStr) throws IllegalArticleException, IllegalArticleTypeException{
 		if(!ContentValidator.isValidArticle(articleStr)) {
-			// TODO prashant remove hard coding
-			throw new IllegalArgumentException("Invalid article structure");
+			throw new IllegalArticleException("Invalid article structure: "+ articleStr);
 		}
-		String[] split = articleStr.split(ArticleConstants.ARTICLE_DELIMITER);
-		new Article(Type.getType(split[0]), split[1], split[2], split[3]);
+		String[] split = articleStr.split(ArticleConstants.ARTICLE_DELIMITER,-1);
+		if(!ContentValidator.isValidType(split[0])) {
+			throw new IllegalArticleTypeException("Illegal Article Type: " + split[0]);
+		}
+		this.type = Type.getType(split[0]);
+		this.originator = split[1];
+		this.org = split[2]; 
+		this.contents = split[3];
 	}
 	
 	public Type getType() {

@@ -2,6 +2,7 @@ package edu.umn.pubsub.common.client;
 
 import java.lang.reflect.Constructor;
 
+import edu.umn.pubsub.common.exception.IllegalIPException;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
@@ -17,10 +18,10 @@ public final class ClientInfo {
 	 * This {@link Constructor} throws {@link IllegalArgumentException} if the ip is not valid.
 	 * @throws IllegalArgumentException
 	 */
-	public ClientInfo(String ip, int port) throws IllegalArgumentException{
+	public ClientInfo(String ip, int port) throws IllegalIPException{
 		if(!ContentValidator.isValidIp(ip)) {
 			// TODO prashant remove hardcoding
-			throw new IllegalArgumentException("Invalid Ip" + ip);
+			throw new IllegalIPException("Invalid Ip: " + ip);
 		}
 		this.ip = ip;
 		this.port = port;

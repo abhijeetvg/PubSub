@@ -2,6 +2,9 @@ package edu.umn.pubsub.common.content;
 
 import edu.umn.pubsub.common.constants.ArticleConstants;
 import edu.umn.pubsub.common.constants.Type;
+import edu.umn.pubsub.common.exception.IllegalArticleTypeException;
+import edu.umn.pubsub.common.exception.IllegalSubscriptionException;
+import edu.umn.pubsub.common.util.StringUtil;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
@@ -21,13 +24,17 @@ public final class Subscription {
 		this.org = org;
 	}
 	
-	public Subscription(String subscriptionStr) {
+	public Subscription(String subscriptionStr) throws IllegalSubscriptionException, IllegalArticleTypeException{
 		if(!ContentValidator.isValidSubscription(subscriptionStr)) {
-			// TODO prashant remove hard coding
-			throw new IllegalArgumentException("Invalid subscription : " + subscriptionStr);
+			throw new IllegalSubscriptionException("Invalid subscription: " + subscriptionStr);
 		}
-		String[] split = subscriptionStr.split(ArticleConstants.ARTICLE_DELIMITER);
-		new Subscription(Type.getType(split[0]),split[1],split[2]);
+		String[] split = subscriptionStr.split(ArticleConstants.ARTICLE_DELIMITER,-1);
+		if(!ContentValidator.isValidType(split[0])) {
+			throw new IllegalArticleTypeException("Illegal Article Type: " + split[0]);
+		}
+		this.type = Type.getType(split[0]);
+		this.originator = split[1];
+		this.org = split[2];
 	}
 	
 	public Type getType() {
@@ -55,11 +62,11 @@ public final class Subscription {
 			return false;
 		}
 		// check originator
-		if(originator != null && !originator.equals(article.getOriginator())) {
+		if(!StringUtil.isEmpty(originator) && !originator.equals(article.getOriginator())) {
 			return false;
 		}
 		// check org
-		if(org != null && !org.equals(article.getOrg())) {
+		if(!StringUtil.isEmpty(org) && !org.equals(article.getOrg())) {
 			return false;
 		}
 		return true;

@@ -37,6 +37,9 @@ public final class ContentValidator {
 	 * @return
 	 */
 	public static boolean isValidIp(String ipString) {
+		if(ipString == null) {
+			return false;
+		}
 		String ipPattern = 
 		        "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 		        "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
@@ -63,7 +66,7 @@ public final class ContentValidator {
 		if(articleString == null) {
 			return false;
 		}
-		String[] split = articleString.split(ArticleConstants.ARTICLE_DELIMITER);
+		String[] split = articleString.split(ArticleConstants.ARTICLE_DELIMITER,-1);
 		if(split == null) {
 			return false;
 		}
@@ -71,9 +74,6 @@ public final class ContentValidator {
 			return false;
 		}
 		if(split[3] == null || split[3].isEmpty()) {
-			return false;
-		}
-		if(!isValidType(split[0])) {
 			return false;
 		}
 		return true;
@@ -98,23 +98,15 @@ public final class ContentValidator {
 		if(subscriptionString == null) {
 			return false;
 		}
-		String[] split = subscriptionString.split(ArticleConstants.ARTICLE_DELIMITER);
+		String[] split = subscriptionString.split(ArticleConstants.ARTICLE_DELIMITER,-1);
 		if(split == null) {
 			return false;
 		}
 		if(split.length != 4) {
 			return false;
 		}
-		// content is not null
-		if(split[3] != null && !split[3].isEmpty()) {
-			return false;
-		}
 		// all org, topic and originator are null
 		if(StringUtil.isEmpty(split[0]) && StringUtil.isEmpty(split[1]) && StringUtil.isEmpty(split[2])) {
-			return false;
-		}
-		// not a valid type
-		if(!isValidType(split[0])) {
 			return false;
 		}
 		return true;
