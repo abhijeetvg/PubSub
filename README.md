@@ -22,5 +22,12 @@ Steps:
 * Generate eclipse project files: `mvn eclipse:eclipse`
   * This project can be now imported in eclipse.
 
+## Starting RMI Registry
+
+* To start RMI registry on server host you need to set the `CLASSPATH` first. 
+* The classpath should include the path of the `jar` that contains the `Communicate` interface and the `PubSubService\_Stub`. This is the `common` and `server` jar.
+* Eg. `export CLASSPATH=export CLASSPATH="/home/prashant/workspace/PubSub/common/target/common-1.0-SNAPSHOT.jar:/home/prashant/workspace/PubSub/server/target/server-1.0-SNAPSHOT.jar"`
+* Run `rmiregistry` now.
+
 
 
