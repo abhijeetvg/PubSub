@@ -46,10 +46,10 @@
             <goals>
               <goal>rmic</goal>
             </goals>
-            <phase>package</phase>
+            <phase>test</phase>
             <configuration>
               <!--/edu/umn/pubsub/common/rmi-->
-              <!--outputDirectory>../common/target/edu/umn/pubsub/common/rmi</outputDirectory-->
+              <outputDirectory>target/classes</outputDirectory>
             </configuration>
           </execution>
         </executions>
