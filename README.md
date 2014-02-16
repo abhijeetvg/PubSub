@@ -29,5 +29,22 @@ Steps:
 * Eg. `export CLASSPATH=export CLASSPATH="/home/prashant/workspace/PubSub/common/target/common-1.0-SNAPSHOT.jar:/home/prashant/workspace/PubSub/server/target/server-1.0-SNAPSHOT.jar"`
 * Run `rmiregistry` now.
 
+## Setting up Security policy
 
+* Create a security policy file.
+* Eg security.policy. Contents of this file:
+`grant {
+// Allow everything for now
+permission java.security.AllPermission;
+};`
 
+## Starting client (on Linux)
+
+* Go to the pubsub-1.0-SNAPSHOT/: `cd  dist/target/pubsub-1.0-SNAPSHOT/`
+* Run: `java -Djava.security.policy="<SECURITY POLICY FILE>" -cp ./client-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT.jar edu.umn.pubsub.client.Client <IP ADDRESS OF THE SERVER>`
+* This will give you the client command line prompt.
+
+## Starting server (on Linux)
+
+* Go to the pubsub-1.0-SNAPSHOT/: `cd  dist/target/pubsub-1.0-SNAPSHOT/`
+* Run: `java -Djava.security.policy="<SECURITY POLICY FILE>" -cp ./client-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT.jar edu.umn.pubsub.server.Server <IP ADDRESS OF THE SERVER>`
