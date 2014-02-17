@@ -6,4 +6,5 @@ public final class RMIConstants {
 	}
 	
 	public static final String PUB_SUB_SERVICE = "PubSubService";
+	public static final int RMI_DEFAULT_PORT = 1099;
 }

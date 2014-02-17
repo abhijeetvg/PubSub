@@ -111,4 +111,22 @@ public final class ContentValidator {
 		}
 		return true;
 	}
+
+	/**
+	 * Checks if the port is a valid positive number.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public static boolean isValidPort(String string) {
+		try{
+			int parseInt = Integer.parseInt(string);
+			if(parseInt < 0) {
+				return false;
+			}
+		} catch(NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
 }
