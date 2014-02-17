@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketAddress;
 
 import edu.umn.pubsub.common.content.Article;
 
@@ -25,15 +26,15 @@ public class UDPClientUtil {
 	 * @param article
 	 * @throws IOException
 	 */
-	public static void send(String host, int port, Article article) 
+	public static void send(String host, int port, String article)
 			throws IOException {
 		
-		DatagramSocket socket = new DatagramSocket(port);
+		DatagramSocket socket = new DatagramSocket();
 		
 		InetAddress addr = InetAddress.getByName(host);
 		
-		byte[] data = article.toString().getBytes();
-		DatagramPacket packet = new DatagramPacket(data, 0, addr, data.length);
+		byte[] data = article.getBytes();
+		DatagramPacket packet = new DatagramPacket(data, 0, data.length, addr, port);
 		
 		socket.send(packet);
 		

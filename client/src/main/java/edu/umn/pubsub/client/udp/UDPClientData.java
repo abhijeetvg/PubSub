@@ -20,8 +20,8 @@ public class UDPClientData implements UDPData{
 		//TODO: Maybe write it into a file, so it does not have to be 
 		//synchronized with client shell.
 		synchronized (PrintLock.printLock) {
-			System.out.println("Coming in hot, watch out...");
-			System.out.println(data);
+			System.out.println("\n\n\tComing in hot, watch out...");
+			System.out.println("\t" + data);
 		}
 	}
 

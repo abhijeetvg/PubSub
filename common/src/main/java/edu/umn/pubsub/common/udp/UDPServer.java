@@ -3,7 +3,9 @@ package edu.umn.pubsub.common.udp;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * UDP Server implementation
@@ -13,8 +15,9 @@ import java.net.SocketException;
 public class UDPServer extends Thread {
 
 	private static final String UDP_SERVER_NAME = "UDPServerThread";
-	private static final int MAX_ARTICLE_LENGTH = 120;
+	private static final int MAX_ARTICLE_LENGTH = 1000;
 	private DatagramSocket socket = null;
+	private int port;
 	
 	private static UDPServer udpServer = null;
 	
@@ -23,10 +26,11 @@ public class UDPServer extends Thread {
 	private UDPServer(int port, UDPData udpData) {
 		super(UDP_SERVER_NAME);
 		
-		this.udpData = udpData; 
+		this.udpData = udpData;
+		this.port = port;
 		
 		try {
-
+			//InetAddress addr = InetAddress.getByName("localhost");
 			socket = new DatagramSocket(port);
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
@@ -35,15 +39,11 @@ public class UDPServer extends Thread {
 		
 	}
 	
-	public static UDPServer getUDPServer(int port, UDPData udpData) {
+	public static synchronized UDPServer getUDPServer(int port, UDPData udpData) {
 		if (null == udpServer) {
-			synchronized (udpServer) {
-				if (null == udpServer) {
-					return new UDPServer(port, udpData);
-				}
-			}
+			udpServer = new UDPServer(port, udpData);
 		}
-		
+
 		return udpServer;
 	}
 	
@@ -54,7 +54,7 @@ public class UDPServer extends Thread {
 				byte[] buf = new byte[MAX_ARTICLE_LENGTH];
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				socket.receive(packet);
-			
+
 				String data = new String(packet.getData(), 0, packet.getLength());
 				udpData.process(data);
 			}
@@ -63,7 +63,7 @@ public class UDPServer extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void close() {
 		if (null != socket) socket.close();
 	}

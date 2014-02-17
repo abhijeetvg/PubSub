@@ -31,8 +31,8 @@ public class Client {
 
 	CommandFactory cmdFactory;
 	Communicate client;
-	
-	private static final String CMD_PROMPT = "PubSub-Client-1.0$ ";
+
+	private static final String CMD_PROMPT = "\nPubSub-Client-1.0$ ";
 	private static final String GOOD_BYE_MSG = "Good Bye! ";
 
 	public Client(Communicate client) {
@@ -40,14 +40,14 @@ public class Client {
 	}
 
 	private void executeCmd(String cmdStr) {
-		
+
 		try {
 			BaseCommand cmd = CommandFactory.getCommand(cmdStr);
-			
+
 			if (!cmd.execute(client)) {
 				System.out.println(CommandConstants.ERR_COMMAND_EXEC_FAILED);
 			}
-			
+
 		} catch (IllegalCommandException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,27 +61,26 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
-	 * Starts the shell and accepts commands.
-	 * Ends when "exit" or "quit" is encountered.
+	 * Starts the shell and accepts commands. Ends when "exit" or "quit" is
+	 * encountered.
 	 */
 	public void startShell() {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	    String cmd;
-	    
-	    try {
+		String cmd;
 
-	    	//TODO: Improve; this makes it slow but for now needs to synchronized with
-	    	//UDP thread printing data.
-	    	synchronized (PrintLock.printLock) {
-	    		
-				System.out.print(CMD_PROMPT);
+		try {
 
-				while ((cmd = in.readLine()) != null) {
+			// TODO: Improve; this makes it slow but for now needs to
+			// synchronized with UDP thread printing data.
 
+			System.out.print(CMD_PROMPT);
+
+			while ((cmd = in.readLine()) != null) {
+				synchronized (PrintLock.printLock) {
 					if (cmd.isEmpty() || cmd.startsWith("#")) {
 						System.out.print(CMD_PROMPT);
 						continue;
@@ -104,21 +103,21 @@ public class Client {
 		}
 	}
 
-	
 	/**
 	 * Drives the client execution.
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
 		try {
 
-			Communicate client = (Communicate) Naming.lookup("rmi://" + args[0] + "/" 
-					+ RMIConstants.PUB_SUB_SERVICE);
-			
+			Communicate client = (Communicate) Naming.lookup("rmi://" + args[0]
+					+ "/" + RMIConstants.PUB_SUB_SERVICE);
+
 			Client shell = new Client(client);
 			shell.startShell();
-			
+
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,7 +128,7 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }
