@@ -8,6 +8,7 @@ import java.util.Set;
 import edu.umn.pubsub.common.client.ClientInfo;
 import edu.umn.pubsub.common.content.Article;
 import edu.umn.pubsub.common.content.Subscription;
+import edu.umn.pubsub.common.exception.IllegalClientException;
 
 /**
  * This is a cache that stores clients and subscriptions and provides synchronized access.
@@ -45,17 +46,21 @@ public final class ClientInfoCache {
 	
 	/**
 	 * Removes client from client list
+	 * @throws IllegalClientException 
 	 */
-	public synchronized boolean removeClient(ClientInfo client) {
+	public synchronized boolean removeClient(ClientInfo client) throws IllegalClientException {
+		if(!clients.contains(client)) {
+			throw new IllegalClientException("Client : " + client + " not joined. Cannot remove it");
+		}
 		return clients.remove(client);
 	}
 	
 	/**
 	 * Add subscription for given client
 	 */
-	public synchronized boolean addSubscription(ClientInfo client, Subscription subscription) {
+	public synchronized boolean addSubscription(ClientInfo client, Subscription subscription) throws IllegalClientException{
 		if(!clients.contains(client)) {
-			throw new IllegalStateException("Client : " + client + " not joined. Cannot add subscription");
+			throw new IllegalClientException("Client : " + client + " not joined. Cannot add subscription");
 		}
 		Set<ClientInfo> clients;
 		if(!subscriptionClientMap.containsKey(subscription)) {
@@ -73,9 +78,9 @@ public final class ClientInfoCache {
 	 * @return <code>true</code> if the cache contained this subscription for the client.
 	 * 
 	 */
-	public synchronized boolean removeSubscription(ClientInfo client, Subscription subscription) {
+	public synchronized boolean removeSubscription(ClientInfo client, Subscription subscription) throws IllegalClientException{
 		if(!clients.contains(client)) {
-			throw new IllegalStateException("Client : " + client + " not joined. Cannot remove subscription");
+			throw new IllegalClientException("Client : " + client + " not joined. Cannot remove subscription");
 		}
 		if(!subscriptionClientMap.containsKey(subscription)) {
 			return false;
