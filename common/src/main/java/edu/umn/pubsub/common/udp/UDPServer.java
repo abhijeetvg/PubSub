@@ -55,6 +55,7 @@ public class UDPServer extends Thread {
 				if(data.equals(RegisteryServerConstants.HEARTBEAT)) {
 					LogUtil.log("UDPServer.run()", "Got Heartbeat from registry server. Sending it back.");
 					socket.send(new DatagramPacket(data.getBytes(), 0, data.getBytes().length, packet.getAddress(), packet.getPort()));
+					continue;
 				}
 
 				udpData.process(data);
