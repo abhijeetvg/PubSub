@@ -58,15 +58,15 @@ public final class Subscription {
 	 */
 	public boolean matchesArticle(Article article) {
 		// check type
-		if(type != null && !type.equals(article.getType())) {
+		if(article.getType() != null && !article.getType().equals(type)) {
 			return false;
 		}
 		// check originator
-		if(!StringUtil.isEmpty(originator) && !originator.equals(article.getOriginator())) {
+		if(!StringUtil.isEmpty(article.getOriginator()) && !article.getOriginator().equals(originator)) {
 			return false;
 		}
 		// check org
-		if(!StringUtil.isEmpty(org) && !org.equals(article.getOrg())) {
+		if(!StringUtil.isEmpty(article.getOrg()) && !article.getOrg().equals(org)) {
 			return false;
 		}
 		return true;
