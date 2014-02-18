@@ -114,7 +114,7 @@ public final class ClientManager {
 	 */
 	public boolean Subscribe(ClientInfo client, Subscription subscription)
 			throws RemoteException {
-		String method = CLASS_NAME + "Subscribe()";
+		String method = CLASS_NAME + ".Subscribe()";
 		LogUtil.log(method, "Adding Subscription: "+ subscription + " for client: " + client);
 		try {
 			return ClientInfoCache.getInstance().addSubscription(client, subscription);

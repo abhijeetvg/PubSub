@@ -52,6 +52,11 @@ public final class ClientInfoCache {
 		if(!clients.contains(client)) {
 			throw new IllegalClientException("Client : " + client + " not joined. Cannot remove it");
 		}
+		// First remove the client each of the subscription from subscription map and then remove it from  
+		Set<Subscription> keySet = subscriptionClientMap.keySet();
+		for (Subscription subscription : keySet) {
+			subscriptionClientMap.get(subscription).remove(client);
+		}
 		return clients.remove(client);
 	}
 	
