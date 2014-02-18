@@ -41,7 +41,7 @@ permission java.security.AllPermission;
 ## Starting client (on Linux)
 
 * Go to the pubsub-1.0-SNAPSHOT/: `cd  dist/target/pubsub-1.0-SNAPSHOT/`
-* Run: `java -Djava.security.policy="<SECURITY POLICY FILE>" -cp ./client-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT.jar edu.umn.pubsub.client.Client <IP ADDRESS OF THE SERVER>`
+* Run: `java -Djava.security.policy="<SECURITY POLICY FILE>" -cp ./client-1.0-SNAPSHOT.jar:./server-1.0-SNAPSHOT.jar:./common-1.0-SNAPSHOT.jar edu.umn.pubsub.client.Client <IP ADDRESS OF THE SERVER> <IP_ADDR_OF_UDP_CLIENT> <UDP_CLIENT_PORT>`
 * This will give you the client command line prompt.
 
 ## Starting server (on Linux)
