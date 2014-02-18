@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 
 import edu.umn.pubsub.client.cli.BaseCommand;
 import edu.umn.pubsub.client.cli.CommandFactory;
+import edu.umn.pubsub.client.cli.Heartbeats;
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
 import edu.umn.pubsub.client.exceptions.IllegalCommandException;
@@ -17,6 +18,7 @@ import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.constants.RMIConstants;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.udp.PrintLock;
+import edu.umn.pubsub.common.udp.UDPServer;
 import edu.umn.pubsub.common.util.LogUtil;
 
 /**
@@ -74,6 +76,10 @@ public class Client {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String cmd;
 
+		//Start heart beat thread
+		Thread t = new Thread(new Heartbeats());
+		t.start();
+
 		try {
 
 			// TODO: Improve; this makes it slow but for now needs to
@@ -90,9 +96,6 @@ public class Client {
 
 					if (cmd.trim().equalsIgnoreCase("exit")
 							|| cmd.trim().equalsIgnoreCase("quit")) {
-						LogUtil.info("Leaving Server");
-						executeCmd("leave");
-						LogUtil.info(GOOD_BYE_MSG);
 						break;
 					}
 
@@ -104,6 +107,12 @@ public class Client {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			//LogUtil.info("Leaving Server.");
+			//executeCmd("leave");
+			LogUtil.info("Stopping threads.");
+			t.stop();
+			LogUtil.info(GOOD_BYE_MSG);
 		}
 	}
 

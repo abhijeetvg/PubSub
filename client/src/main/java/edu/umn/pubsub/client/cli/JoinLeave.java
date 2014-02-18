@@ -45,38 +45,37 @@ public class JoinLeave extends BaseCommand {
 	@Override
 	public boolean execute(Communicate client) 
 			throws NumberFormatException, RemoteException, ClientNullException {
-		
+
 		if (null == client) {
 			throw new ClientNullException(CommandConstants.ERR_RMI_CLIENT_NULL);
 		}
-		
+
 		//Instantiate UDP server to handle these requests
 		if (cmdType == CommandConstants.DO_COMMAND) {
 			UDPData udpData = new UDPClientData();
 			UDPServer.getUDPServer(getPort(), udpData)
 				.start();
-		}
 
-		if (isServerCall) {
-			if (cmdType == CommandConstants.DO_COMMAND) {
+			if (isServerCall) {
 				return client.JoinServer(getHost(), getPort());
 			}
-		
-			if (cmdType == CommandConstants.UNDO_COMMAND) {
-				return client.LeaveServer(getHost(), getPort());
-			}
-		}
 
-		if (cmdType == CommandConstants.DO_COMMAND) {
 			return client.Join(getHost(), getPort());
 		}
-		
+
 		if (cmdType == CommandConstants.UNDO_COMMAND) {
+
+			UDPServer.stopThread();
+
+			if (isServerCall) {
+				return client.LeaveServer(getHost(), getPort());
+			}
+
 			return client.Leave(getHost(), getPort());
 		}
-	
+
 		return false;
-		
+
 	}
 
 }
