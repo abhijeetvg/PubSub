@@ -11,6 +11,7 @@ import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.util.UDPClientUtil;
 import edu.umn.pubsub.server.Server;
 import edu.umn.pubsub.server.config.RegisteryServerConfig;
+import edu.umn.pubsub.server.udp.UDPServerData;
 
 /**
  * This is singleton manager class for managing requests to the RegistryServer.
@@ -20,7 +21,8 @@ import edu.umn.pubsub.server.config.RegisteryServerConfig;
  */
 public final class RegisteryServerManager {
 	private final String CLASS_NAME = RegisteryServerManager.class.getSimpleName();
-	private final String commandDelimiter = ";"; 
+	private final String commandDelimiter = ";";
+	private final int RETRY_COUNT = 5;
 	private static RegisteryServerManager instance = null;
 	private boolean isRegistered = false;
 	
@@ -51,9 +53,21 @@ public final class RegisteryServerManager {
 								+ commandDelimiter + RMIConstants.PUB_SUB_SERVICE
 								+ commandDelimiter + Server.getRMIServerPort();
 		
-		LogUtil.log(method, "Sending command: " + registerCommand + " via UDP");
-		// TODO prashant send this command to regsitery server via UDP.
-		isRegistered = true;
+		for(int i = 0; i < RETRY_COUNT; ++i) {
+			LogUtil.log(method, "Sending command: " + registerCommand + " via UDP");
+			try {
+				UDPClientUtil.send(RegisteryServerConfig.REGISTER_SERVER_ADDRESS,RegisteryServerConfig.REGISTER_SERVER_PORT, registerCommand);
+				isRegistered = true;
+				break;
+			} catch (IOException e) {
+				LogUtil.log(method, "Got IOException while registering.");
+				if(i == RETRY_COUNT - 1) {
+					LogUtil.log(method, "Max retries reached. wont retry again.");	
+				}else{
+					LogUtil.log(method, "Retrying again.");
+				}
+			}
+		}
 		return isRegistered;
 	}
 	
@@ -68,9 +82,22 @@ public final class RegisteryServerManager {
 								+ commandDelimiter + Server.getServerPort();
 		LogUtil.log(method, "Sending command: " + deregisterCommand + " via UDP");
 		
-		// TODO prashant send this command to regsitery server via UDP.
-		isRegistered = false;
-		return true;
+		for(int i = 0; i < RETRY_COUNT; ++i) {
+			LogUtil.log(method, "Sending command: " + deregisterCommand + " via UDP");
+			try {
+				UDPClientUtil.send(RegisteryServerConfig.REGISTER_SERVER_ADDRESS,RegisteryServerConfig.REGISTER_SERVER_PORT, deregisterCommand);
+				isRegistered = false;
+			} catch (IOException e) {
+				LogUtil.log(method, "Got IOException while registering.");
+				if(i == RETRY_COUNT - 1) {
+					LogUtil.log(method, "Max retries reached. wont retry again.");
+					isRegistered = true;
+				}else{
+					LogUtil.log(method, "Retrying again.");
+				}
+			}
+		}
+		return !isRegistered;
 	}
 
 	/**
@@ -81,7 +108,7 @@ public final class RegisteryServerManager {
 		String getListCommand = "GetList" + commandDelimiter 
 								+ "RMI" + commandDelimiter
 								+ Server.getServerIp() + commandDelimiter 
-								+ Server.getServerPort() + commandDelimiter;
+								+ Server.getServerPort();
 				
 		LogUtil.log(method, "Sending getList command: " + getListCommand);
 		try {
@@ -89,9 +116,7 @@ public final class RegisteryServerManager {
 		} catch (IOException e) {
 			LogUtil.log(method, "Got IOException while sending GetListCommand to Registry Server");
 		}
-		
-		
-		return parseGetListResult("result");
+		return parseGetListResult(UDPServerData.getInstance().getList());
 	}
 
 	private Set<ServerInfo> parseGetListResult(String getListResult) {

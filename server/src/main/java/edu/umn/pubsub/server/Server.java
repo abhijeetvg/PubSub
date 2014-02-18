@@ -5,8 +5,12 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 import edu.umn.pubsub.common.constants.RMIConstants;
+import edu.umn.pubsub.common.udp.UDPServer;
 import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.validator.ContentValidator;
+import edu.umn.pubsub.server.registery.RegisteryServerGetListPoller;
+import edu.umn.pubsub.server.registery.RegisteryServerManager;
+import edu.umn.pubsub.server.udp.UDPServerData;
 
 /**
  * This is the starting point for server.
@@ -41,15 +45,19 @@ public class Server {
 		rmiServerPort = Integer.parseInt(args[1]);
 		
 		LogUtil.log(method, "Registering to Registery Server");
-		/*if(!RegistryServerManager.getInstance().register()) {
+		if(!RegisteryServerManager.getInstance().register()) {
 			LogUtil.log(method, "FAILED to register to Registery Server. Exiting. TRY AGAIN.");
 			return;
-		}*/
+		}
 		LogUtil.log(method, "DONE Registering to Registery Server");
 		
+		LogUtil.log(method, "Starting UDP Server");
+		UDPServer.getUDPServer(serverUDPPort, UDPServerData.getInstance()).start();
+		LogUtil.log(method, "DONE Starting UDP Server");
+		
 		LogUtil.log(method, "Starting the Get list poller thread");
-		//Thread thread = new Thread(new RegisteryServerGetListPoller());
-		//thread.start();
+		Thread thread = new Thread(new RegisteryServerGetListPoller());
+		thread.start();
 		LogUtil.log(method, "DONE Starting the Get list poller thread");
 		
 		LogUtil.log(method, "Starting server on  " + serverIp);
