@@ -40,7 +40,7 @@ public class RegisteryServerGetListPoller implements Runnable{
 			}
 			
 			for (ServerInfo serverInfo : registeredServers) {
-				LogUtil.log(method, "Binding to server: " + serverInfo);
+				LogUtil.log(method, "Binding to server: " + serverInfo.toString());
 				
 				Communicate client;
 				try {
@@ -66,8 +66,8 @@ public class RegisteryServerGetListPoller implements Runnable{
 					continue;
 				}
 				LogUtil.log(method, "DONE Joining server: " + serverInfo);
-				sleep(POLL_INTERVAL);
 			}
+			sleep(POLL_INTERVAL);
 		}
 	}
 
