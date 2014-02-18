@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
 import edu.umn.pubsub.client.udp.UDPClientData;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.udp.UDPData;
 import edu.umn.pubsub.common.udp.UDPServer;
@@ -24,19 +25,16 @@ import edu.umn.pubsub.common.udp.UDPServer;
  *
  */
 public class JoinLeave extends BaseCommand {
-
-	private final int ARG_HOST = 1;
-	private final int ARG_PORT = 2;
 	
 	private int cmdType;
 	private boolean isServerCall;
 	
-	public JoinLeave(String cmd, int doCommand) {
-		this(cmd, doCommand, false);
+	public JoinLeave(String cmd, UDPConnInfo conInfo, int doCommand) {
+		this(cmd, conInfo, doCommand, false);
 	}
 	
-	public JoinLeave(String cmd, int doCommand, boolean isServerCall) {
-		super(cmd);
+	public JoinLeave(String cmd, UDPConnInfo conInfo, int doCommand, boolean isServerCall) {
+		super(cmd, conInfo);
 		this.cmdType = doCommand;
 		this.isServerCall = isServerCall;
 	}
@@ -55,30 +53,26 @@ public class JoinLeave extends BaseCommand {
 		//Instantiate UDP server to handle these requests
 		if (cmdType == CommandConstants.DO_COMMAND) {
 			UDPData udpData = new UDPClientData();
-			UDPServer.getUDPServer(Integer.parseInt(getArgument(ARG_PORT)), udpData)
+			UDPServer.getUDPServer(getPort(), udpData)
 				.start();
 		}
 
 		if (isServerCall) {
 			if (cmdType == CommandConstants.DO_COMMAND) {
-				return client.JoinServer(getArgument(ARG_HOST)
-					, Integer.parseInt(getArgument(ARG_PORT)));
+				return client.JoinServer(getHost(), getPort());
 			}
 		
 			if (cmdType == CommandConstants.UNDO_COMMAND) {
-				return client.LeaveServer(getArgument(ARG_HOST)
-					, Integer.parseInt(getArgument(ARG_PORT)));
+				return client.LeaveServer(getHost(), getPort());
 			}
 		}
 
 		if (cmdType == CommandConstants.DO_COMMAND) {
-			return client.Join(getArgument(ARG_HOST)
-					, Integer.parseInt(getArgument(ARG_PORT)));
+			return client.Join(getHost(), getPort());
 		}
 		
 		if (cmdType == CommandConstants.UNDO_COMMAND) {
-			return client.Leave(getArgument(ARG_HOST)
-					, Integer.parseInt(getArgument(ARG_PORT)));
+			return client.Leave(getHost(), getPort());
 		}
 	
 		return false;

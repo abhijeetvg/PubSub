@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.rmi.Communicate;
 
 /**
@@ -16,8 +17,8 @@ import edu.umn.pubsub.common.rmi.Communicate;
  */
 public class Ping extends BaseCommand {
 
-	public Ping(String cmd) {
-		super(cmd);
+	public Ping(String cmd, UDPConnInfo conInfo) {
+		super(cmd, conInfo);
 	}
 
 

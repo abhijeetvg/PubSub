@@ -7,19 +7,17 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.StringTokenizer;
 
-import sun.tools.jar.CommandLine;
 import edu.umn.pubsub.client.cli.BaseCommand;
 import edu.umn.pubsub.client.cli.CommandFactory;
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
 import edu.umn.pubsub.client.exceptions.IllegalCommandException;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.constants.RMIConstants;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.udp.PrintLock;
+import edu.umn.pubsub.common.util.LogUtil;
 
 /**
  * RMI Client, shell interface.
@@ -29,23 +27,27 @@ import edu.umn.pubsub.common.udp.PrintLock;
  */
 public class Client {
 
-	CommandFactory cmdFactory;
-	Communicate client;
+	private Communicate client;
 
+	private UDPConnInfo conInfo;
+	
 	private static final String CMD_PROMPT = "\nPubSub-Client-1.0$ ";
 	private static final String GOOD_BYE_MSG = "Good Bye! ";
 
-	public Client(Communicate client) {
+	private static final String USAGE_HELP = "arguments: <rmi_server_host> <udp_host> <udp_host>";
+
+	public Client(Communicate client, UDPConnInfo conInfo) {
 		this.client = client;
+		this.conInfo = conInfo;
 	}
 
 	private void executeCmd(String cmdStr) {
 
 		try {
-			BaseCommand cmd = CommandFactory.getCommand(cmdStr);
+			BaseCommand cmd = CommandFactory.getCommand(cmdStr, conInfo);
 
 			if (!cmd.execute(client)) {
-				System.out.println(CommandConstants.ERR_COMMAND_EXEC_FAILED);
+				LogUtil.info(CommandConstants.ERR_COMMAND_EXEC_FAILED);
 			}
 
 		} catch (IllegalCommandException e) {
@@ -88,7 +90,9 @@ public class Client {
 
 					if (cmd.trim().equalsIgnoreCase("exit")
 							|| cmd.trim().equalsIgnoreCase("quit")) {
-						System.out.println(GOOD_BYE_MSG);
+						LogUtil.info("Leaving Server");
+						executeCmd("leave");
+						LogUtil.info(GOOD_BYE_MSG);
 						break;
 					}
 
@@ -111,11 +115,16 @@ public class Client {
 	public static void main(String[] args) {
 
 		try {
+			
+			if (3 != args.length) {
+				LogUtil.info(USAGE_HELP);
+			}
 
 			Communicate client = (Communicate) Naming.lookup("rmi://" + args[0]
 					+ "/" + RMIConstants.PUB_SUB_SERVICE);
 
-			Client shell = new Client(client);
+			Client shell = new Client(client, new UDPConnInfo(args[1]
+					, Integer.parseInt(args[2])));
 			shell.startShell();
 
 		} catch (RemoteException e) {

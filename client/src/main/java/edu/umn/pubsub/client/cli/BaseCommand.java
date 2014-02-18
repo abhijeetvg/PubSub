@@ -3,6 +3,7 @@ package edu.umn.pubsub.client.cli;
 import java.rmi.RemoteException;
 
 import edu.umn.pubsub.client.exceptions.ClientNullException;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.rmi.Communicate;
 
 /**
@@ -14,9 +15,11 @@ import edu.umn.pubsub.common.rmi.Communicate;
 public abstract class BaseCommand {
 	
 	private String[] arguments;
+	private UDPConnInfo conInfo;
 	
-	public BaseCommand(String cmd) {
+	public BaseCommand(String cmd, UDPConnInfo conInfo) {
 		this.arguments = cmd.split(" ");
+		this.conInfo = conInfo;
 	}
 	
 	/**
@@ -35,10 +38,18 @@ public abstract class BaseCommand {
 		
 		//sanity
 		if (position <= 0 || position >= arguments.length) {
-			return null;
+			throw new IllegalArgumentException();
 		}
 		
 		return arguments[position];
+	}
+	
+	public int getPort() {
+		return conInfo.getPort();
+	}
+	
+	public String getHost() {
+		return conInfo.getHost();
 	}
 	
 }
