@@ -52,24 +52,25 @@ public final class Subscription {
 	/**
 	 * Returns true if the current article matches the subscription.
 	 * The NOT NULL type, originator and org from the subscription are matched.
+	 * If any one of the above matches <code>true</code> is returned.
 	 * 
 	 * @param article
 	 * @return
 	 */
 	public boolean matchesArticle(Article article) {
 		// check type
-		if(article.getType() != null && !article.getType().equals(type)) {
-			return false;
+		if(article.getType() != null && article.getType().equals(type)) {
+			return true;
 		}
 		// check originator
-		if(!StringUtil.isEmpty(article.getOriginator()) && !article.getOriginator().equals(originator)) {
-			return false;
+		if(!StringUtil.isEmpty(article.getOriginator()) && article.getOriginator().equals(originator)) {
+			return true;
 		}
 		// check org
-		if(!StringUtil.isEmpty(article.getOrg()) && !article.getOrg().equals(org)) {
-			return false;
+		if(!StringUtil.isEmpty(article.getOrg()) && article.getOrg().equals(org)) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
