@@ -11,7 +11,6 @@ import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.util.UDPClientUtil;
 import edu.umn.pubsub.server.Server;
 import edu.umn.pubsub.server.config.RegisteryServerConfig;
-import edu.umn.pubsub.server.udp.UDPServerData;
 
 /**
  * This is singleton manager class for managing requests to the RegistryServer.
@@ -111,12 +110,13 @@ public final class RegisteryServerManager {
 								+ Server.getServerPort();
 				
 		LogUtil.log(method, "Sending getList command: " + getListCommand);
+		String response = null;
 		try {
-			UDPClientUtil.send(RegisteryServerConfig.REGISTER_SERVER_ADDRESS, RegisteryServerConfig.REGISTER_SERVER_PORT, getListCommand);
+			response = UDPClientUtil.getResponse(RegisteryServerConfig.REGISTER_SERVER_ADDRESS, RegisteryServerConfig.REGISTER_SERVER_PORT, getListCommand);
 		} catch (IOException e) {
 			LogUtil.log(method, "Got IOException while sending GetListCommand to Registry Server");
 		}
-		return parseGetListResult(UDPServerData.getInstance().getList());
+		return parseGetListResult(response);
 	}
 
 	private Set<ServerInfo> parseGetListResult(String getListResult) {
@@ -128,6 +128,10 @@ public final class RegisteryServerManager {
 		}
 		String[] split = getListResult.split(commandDelimiter);
 		for(int i = 0; i < split.length; i = i + 3) {
+			if(split[i+1].equals(RMIConstants.PUB_SUB_SERVICE)) {
+				// Do not add our own server
+				continue;
+			}
 			try {
 				activeServers.add(new ServerInfo(split[i], split[i+1], Integer.parseInt(split[i+2])));
 			} catch (NumberFormatException e) {

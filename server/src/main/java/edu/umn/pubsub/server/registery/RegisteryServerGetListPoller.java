@@ -15,7 +15,7 @@ import edu.umn.pubsub.server.cache.ServerInfoCache;
 public class RegisteryServerGetListPoller implements Runnable{
 	private final static String CLASS_NAME = RegisteryServerGetListPoller.class.getSimpleName(); 
 	
-	private final long POLL_INTERVAL = 5000;
+	private final long POLL_INTERVAL = 60*1000;
 	
 	@Override
 	public void run() {
@@ -28,10 +28,10 @@ public class RegisteryServerGetListPoller implements Runnable{
 				sleep(POLL_INTERVAL);
 				continue;
 			}
-			Set<ServerInfo> activeServers = ServerInfoCache.getInstance().getSendableServers();
+			Set<ServerInfo> currentSendableServers = ServerInfoCache.getInstance().getSendableServers();
 			
 			// Remove all the servers that we are already connected to
-			registeredServers.removeAll(activeServers);
+			registeredServers.removeAll(currentSendableServers);
 			
 			if(registeredServers.isEmpty()) {
 				LogUtil.log(method, "No new active servers to join to. Will try again after " + POLL_INTERVAL + "ms");

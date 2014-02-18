@@ -3,9 +3,9 @@ package edu.umn.pubsub.common.udp;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
+
+import edu.umn.pubsub.common.util.LogUtil;
 
 /**
  * UDP Server implementation
@@ -31,7 +31,7 @@ public class UDPServer extends Thread {
 		
 		try {
 			//InetAddress addr = InetAddress.getByName("localhost");
-			socket = new DatagramSocket(port);
+			socket = new DatagramSocket(this.port);
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,6 +56,10 @@ public class UDPServer extends Thread {
 				socket.receive(packet);
 
 				String data = new String(packet.getData(), 0, packet.getLength());
+				if(data.equals("heartbeat")) {
+					LogUtil.log("UDPServer.run()", "Got Heartbeat from registry server. Sending it back.");
+					socket.send(new DatagramPacket(data.getBytes(), 0, data.getBytes().length, packet.getAddress(), packet.getPort()));
+				}
 				udpData.process(data);
 			}
 		} catch (IOException e) {
