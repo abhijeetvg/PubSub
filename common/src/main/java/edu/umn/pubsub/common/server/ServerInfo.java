@@ -56,7 +56,7 @@ public final class ServerInfo {
 	
 	@Override
 	public String toString() {
-		return ip + ":" +bindingName +":"port;
+		return ip + ":" + bindingName + ":" + port;
 	}
 
 	@Override
