@@ -1,4 +1,4 @@
-package edu.umn.pubsub.server;
+package edu.umn.pubsub.server.registery;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -9,6 +9,7 @@ import java.util.Set;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.server.ServerInfo;
 import edu.umn.pubsub.common.util.LogUtil;
+import edu.umn.pubsub.server.Server;
 import edu.umn.pubsub.server.cache.ServerInfoCache;
 
 public class RegisteryServerGetListPoller implements Runnable{
@@ -21,7 +22,7 @@ public class RegisteryServerGetListPoller implements Runnable{
 		String method = CLASS_NAME + ".run()";
 		while(true) {
 			LogUtil.log(method, "Calling getList");
-			Set<ServerInfo> registeredServers = RegistryServerManager.getInstance().getList();
+			Set<ServerInfo> registeredServers = RegisteryServerManager.getInstance().getList();
 			if(registeredServers.isEmpty()) {
 				LogUtil.log(method, "No active servers present. Will try again after " + POLL_INTERVAL + "ms");
 				sleep(POLL_INTERVAL);

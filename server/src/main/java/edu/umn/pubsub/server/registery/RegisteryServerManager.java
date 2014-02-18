@@ -1,4 +1,4 @@
-package edu.umn.pubsub.server;
+package edu.umn.pubsub.server.registery;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -9,6 +9,7 @@ import edu.umn.pubsub.common.exception.IllegalIPException;
 import edu.umn.pubsub.common.server.ServerInfo;
 import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.util.UDPClientUtil;
+import edu.umn.pubsub.server.Server;
 import edu.umn.pubsub.server.config.RegisteryServerConfig;
 
 /**
@@ -17,21 +18,21 @@ import edu.umn.pubsub.server.config.RegisteryServerConfig;
  * @author prashant
  *
  */
-public final class RegistryServerManager {
-	private final String CLASS_NAME = RegistryServerManager.class.getSimpleName();
+public final class RegisteryServerManager {
+	private final String CLASS_NAME = RegisteryServerManager.class.getSimpleName();
 	private final String commandDelimiter = ";"; 
-	private static RegistryServerManager instance = null;
+	private static RegisteryServerManager instance = null;
 	private boolean isRegistered = false;
 	
-	private RegistryServerManager() {
+	private RegisteryServerManager() {
 		// Singleton, so cannot be instantiated.
 	}
 	
-	public static RegistryServerManager getInstance() {
+	public static RegisteryServerManager getInstance() {
 		if(instance == null) {
-			synchronized (RegistryServerManager.class) {
+			synchronized (RegisteryServerManager.class) {
 				if(instance == null) {
-					instance = new RegistryServerManager();
+					instance = new RegisteryServerManager();
 				}
 			}
 		}
