@@ -2,6 +2,7 @@ package edu.umn.pubsub.client.cli;
 
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.IllegalCommandException;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.util.StringUtil;
 
 /**
@@ -23,29 +24,27 @@ public class CommandFactory {
 	private static final String PUBLISH_SERVER_PREFIX = "publishserver";
 	private static final String PING_PREFIX = "ping";
 		
-	public static BaseCommand getCommand(String cmd) 
+	public static BaseCommand getCommand(String cmd, UDPConnInfo conInfo) 
 			throws IllegalCommandException {
 		
 		String prefix = StringUtil.getCmdPrefix(cmd).trim();
 
 		if (prefix.equalsIgnoreCase(JOIN_PREFIX)) {
-			return new JoinLeave(cmd, CommandConstants.DO_COMMAND);
+			return new JoinLeave(cmd, conInfo, CommandConstants.DO_COMMAND);
 		} else if (prefix.equalsIgnoreCase(LEAVE_PREFIX)) {
-			return new JoinLeave(cmd, CommandConstants.UNDO_COMMAND);
+			return new JoinLeave(cmd, conInfo, CommandConstants.UNDO_COMMAND);
 		} else if (prefix.equalsIgnoreCase(SUBSCRIBE_PREFIX)) {
-			return new SubUnSub(cmd, CommandConstants.DO_COMMAND);
+			return new SubUnSub(cmd, conInfo, CommandConstants.DO_COMMAND);
 		} else if (prefix.equalsIgnoreCase(UNSUBSCRIBE_PREFIX)) {
-			return new SubUnSub(cmd, CommandConstants.UNDO_COMMAND);
+			return new SubUnSub(cmd, conInfo, CommandConstants.UNDO_COMMAND);
 		} else if (prefix.equalsIgnoreCase(PUBLISH_PREFIX)) {
-			return new PublishCmd(cmd);
-		} else if (prefix.equalsIgnoreCase(PING_PREFIX)) {
-			return new Ping(cmd);
+			return new PublishCmd(cmd, conInfo);
 		} else if (prefix.equalsIgnoreCase(JOIN_SERVER_PREFIX)) {
-			return new JoinLeave(cmd, CommandConstants.DO_COMMAND, true);
+			return new JoinLeave(cmd, conInfo, CommandConstants.DO_COMMAND, true);
 		} else if (prefix.equalsIgnoreCase(LEAVE_SERVER_PREFIX)) {
-			return new JoinLeave(cmd, CommandConstants.UNDO_COMMAND, true);
+			return new JoinLeave(cmd, conInfo, CommandConstants.UNDO_COMMAND, true);
 		} else if (prefix.equalsIgnoreCase(PUBLISH_SERVER_PREFIX)) {
-			return new PublishCmd(cmd, true);
+			return new PublishCmd(cmd, conInfo, true);
 		}
 		
 		throw new IllegalCommandException(prefix + " " 

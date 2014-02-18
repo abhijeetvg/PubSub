@@ -3,6 +3,8 @@ package edu.umn.pubsub.common.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import sun.util.logging.resources.logging;
+
 /**
  * Methods for logging purposes.
  * The methods will sys out the messages along with different attributes like timestamp.
@@ -23,5 +25,14 @@ public final class LogUtil {
 	
 	public static void log(String method, String message) {
 		System.out.println(currentTime() + "\t" + method + "\t" + message);
+	}
+	
+	public static void info(String message) {
+		System.out.println(message);
+	}
+	
+	public static void error(String method, String message) {
+		System.out.print("ERROR: ");
+		LogUtil.log(method, message);
 	}
 }

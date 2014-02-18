@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.rmi.Communicate;
 
 /**
@@ -17,14 +18,12 @@ import edu.umn.pubsub.common.rmi.Communicate;
  */
 public class SubUnSub extends BaseCommand {
 
-	private final int ARG_HOST = 1;
-	private final int ARG_PORT = 2;
-	private final int ARG_ARTICLE = 3;
+	private final int ARG_ARTICLE = 1;
 	
 	private int cmdType;
 	
-	public SubUnSub(String cmd, int doCommand) {
-		super(cmd);
+	public SubUnSub(String cmd, UDPConnInfo conInfo, int doCommand) {
+		super(cmd, conInfo);
 		this.cmdType = doCommand;
 	}
 
@@ -40,16 +39,12 @@ public class SubUnSub extends BaseCommand {
 		}
 		
 		if (cmdType == CommandConstants.DO_COMMAND) {
-			client.Subscribe(getArgument(ARG_HOST), 
-					Integer.parseInt(getArgument(ARG_PORT)), 
-					getArgument(ARG_ARTICLE));
+			client.Subscribe(getHost(),getPort(), getArgument(ARG_ARTICLE));
 			return true;
 		}
 		
 		if (cmdType == CommandConstants.UNDO_COMMAND) {
-			client.Unsubscribe(getArgument(ARG_HOST), 
-					Integer.parseInt(getArgument(ARG_PORT)), 
-					getArgument(ARG_ARTICLE));
+			client.Unsubscribe(getHost(), getPort(), getArgument(ARG_ARTICLE));
 			return true;
 		}
 				

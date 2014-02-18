@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
+import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.rmi.Communicate;
 
 /**
@@ -17,18 +18,16 @@ import edu.umn.pubsub.common.rmi.Communicate;
  */
 public class PublishCmd extends BaseCommand {
 	
-	private final int ARG_HOST = 1;
-	private final int ARG_PORT = 2;
-	private final int ARG_ARTICLE = 3;
+	private final int ARG_ARTICLE = 1;
 	
 	private boolean isServerCall;
 
-	public PublishCmd(String cmd) {
-		this(cmd, false);
+	public PublishCmd(String cmd, UDPConnInfo conInfo) {
+		this(cmd, conInfo, false);
 	}
 
-	public PublishCmd(String cmd, boolean isServerCall) {
-		super(cmd);
+	public PublishCmd(String cmd, UDPConnInfo conInfo, boolean isServerCall) {
+		super(cmd, conInfo);
 		this.isServerCall = isServerCall;
 	}
 
@@ -44,14 +43,10 @@ public class PublishCmd extends BaseCommand {
 		}
 
 		if (isServerCall) {
-			return client.PublishServer(getArgument(ARG_HOST), 
-					Integer.parseInt(getArgument(ARG_PORT)), 
-					getArgument(ARG_ARTICLE));
+			return client.PublishServer(getHost(), getPort(), getArgument(ARG_ARTICLE));
 		}
 		
-		return client.Publish(getArgument(ARG_HOST), 
-				Integer.parseInt(getArgument(ARG_PORT)), 
-				getArgument(ARG_ARTICLE));
+		return client.Publish(getHost(), getPort(), getArgument(ARG_ARTICLE));
 		
 	}
 
