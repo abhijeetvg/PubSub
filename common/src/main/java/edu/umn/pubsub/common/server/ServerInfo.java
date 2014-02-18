@@ -53,6 +53,11 @@ public final class ServerInfo {
 	public String getBindingName() {
 		return bindingName;
 	}
+	
+	@Override
+	public String toString() {
+		return ip + ":" +bindingName +":"port;
+	}
 
 	@Override
 	public int hashCode() {
