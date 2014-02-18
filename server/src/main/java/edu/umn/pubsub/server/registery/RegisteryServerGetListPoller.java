@@ -30,8 +30,11 @@ public class RegisteryServerGetListPoller implements Runnable{
 			}
 			Set<ServerInfo> currentSendableServers = ServerInfoCache.getInstance().getSendableServers();
 			
+			// remove the servers that no more registered.
+			currentSendableServers.retainAll(registeredServers);
 			// Remove all the servers that we are already connected to
 			registeredServers.removeAll(currentSendableServers);
+			
 			
 			if(registeredServers.isEmpty()) {
 				LogUtil.log(method, "No new active servers to join to. Will try again after " + POLL_INTERVAL + "ms");
