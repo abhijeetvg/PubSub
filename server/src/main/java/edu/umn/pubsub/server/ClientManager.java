@@ -62,7 +62,9 @@ public final class ClientManager {
 
 	
 	public boolean Ping() throws RemoteException {
+		String method = CLASS_NAME + ".Ping()";
 		// By default return true
+		LogUtil.log(method, "Got a ping from client.");
 		return true;
 	}
 

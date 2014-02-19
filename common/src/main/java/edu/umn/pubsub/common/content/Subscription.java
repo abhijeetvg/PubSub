@@ -59,18 +59,18 @@ public final class Subscription {
 	 */
 	public boolean matchesArticle(Article article) {
 		// check type
-		if(article.getType() != null && article.getType().equals(type)) {
-			return true;
+		if(article.getType() != null && type != null && !article.getType().equals(type)) {
+			return false;
 		}
 		// check originator
-		if(!StringUtil.isEmpty(article.getOriginator()) && article.getOriginator().equals(originator)) {
-			return true;
+		if(!StringUtil.isEmpty(article.getOriginator()) && !StringUtil.isEmpty(originator) && !article.getOriginator().equals(originator)) {
+			return false;
 		}
 		// check org
-		if(!StringUtil.isEmpty(article.getOrg()) && article.getOrg().equals(org)) {
-			return true;
+		if(!StringUtil.isEmpty(article.getOrg()) && !StringUtil.isEmpty(org) && !article.getOrg().equals(org)) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	@Override
