@@ -8,6 +8,8 @@ import edu.umn.pubsub.common.util.LogUtil;
 /**
  * Used to check if server is alive every 5s.
  * 
+ * Consider using Callable!
+ *
  * @author Abhijeet
  *
  */

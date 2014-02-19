@@ -30,14 +30,14 @@ import edu.umn.pubsub.common.util.UDPClientUtil;
  * RMI Client, shell interface.
  * 
  * @author Abhijeet
- *
+ * 
  */
 public class Client {
 
 	private Communicate client;
 	private ServerInfo serverInfo;
 	private UDPConnInfo conInfo;
-	
+
 	private static final String CMD_PROMPT = "\nPubSub-Client-1.0$ ";
 	private static final String GOOD_BYE_MSG = "Good Bye! ";
 
@@ -50,27 +50,13 @@ public class Client {
 		this.conInfo = conInfo;
 	}
 
-	private void executeCmd(String cmdStr) {
+	private void executeCmd(String cmdStr)
+			throws IllegalCommandException, NumberFormatException, RemoteException, ClientNullException {
 
-		try {
-			BaseCommand cmd = CommandFactory.getCommand(cmdStr, conInfo);
+		BaseCommand cmd = CommandFactory.getCommand(cmdStr, conInfo);
 
-			if (!cmd.execute(client)) {
-				LogUtil.info(CommandConstants.ERR_COMMAND_EXEC_FAILED);
-			}
-
-		} catch (IllegalCommandException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientNullException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!cmd.execute(client)) {
+			LogUtil.info(CommandConstants.ERR_COMMAND_EXEC_FAILED);
 		}
 
 	}
@@ -78,12 +64,18 @@ public class Client {
 	/**
 	 * Starts the shell and accepts commands. Ends when "exit" or "quit" is
 	 * encountered.
+	 *
+	 * @throws IOException
+	 * @throws ClientNullException
+	 * @throws IllegalCommandException
+	 * @throws NumberFormatException
 	 */
-	public void startShell() {
+	public void startShell() throws IOException
+			, NumberFormatException, IllegalCommandException, ClientNullException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String cmd;
 
-		//Start heart beat thread
+		// Start heart beat thread
 		Thread t = new Thread(new Heartbeats(client));
 		t.start();
 
@@ -101,19 +93,22 @@ public class Client {
 						continue;
 					}
 
-					//optional feature
-					if (t.isAlive()) {
+					// optional feature
+					if (!t.isAlive()) {
 						String commandDelimiter = ";";
-						String getListCommand = "GetList" + commandDelimiter 
-								+ "RMI" + commandDelimiter
-								+ conInfo.getHost() + commandDelimiter 
-								+ conInfo.getPort();
-						Set<ServerInfo> serverInfoList = StringUtil.parseGetListResult(
-						UDPClientUtil.getResponse(RegisteryServerConfig.REGISTER_SERVER_ADDRESS
-								, RegisteryServerConfig.REGISTER_SERVER_PORT
-								, getListCommand), serverInfo.getIp());
+						String getListCommand = "GetList" + commandDelimiter
+								+ "RMI" + commandDelimiter + conInfo.getHost()
+								+ commandDelimiter + conInfo.getPort();
+						Set<ServerInfo> serverInfoList = StringUtil
+								.parseGetListResult(
+										UDPClientUtil
+												.getResponse(
+														RegisteryServerConfig.REGISTER_SERVER_ADDRESS,
+														RegisteryServerConfig.REGISTER_SERVER_PORT,
+														getListCommand),
+										serverInfo.getIp());
 
-						 serverInfo = serverInfoList.iterator().next();
+						serverInfo = serverInfoList.iterator().next();
 					}
 
 					if (cmd.trim().equalsIgnoreCase("exit")
@@ -126,12 +121,9 @@ public class Client {
 					System.out.print(CMD_PROMPT);
 				}
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} finally {
-			//LogUtil.info("Leaving Server.");
-			//executeCmd("leave");
+			// LogUtil.info("Leaving Server.");
+			// executeCmd("leave");
 			LogUtil.info("Stopping threads.");
 			t.stop();
 			LogUtil.info(GOOD_BYE_MSG);
@@ -141,21 +133,28 @@ public class Client {
 	/**
 	 * Drives the client execution.
 	 *
+	 * TODO: Poor exception handling, everything is propagated and printed in 
+	 * this method currently, custom err messages should be printed where the exception 
+	 * is raised.
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
 		try {
-			
+
 			Client shell = null;
 			if (4 == args.length) {
-				shell = new Client(new ServerInfo(args[0], Integer.parseInt(args[1]))
-						, new UDPConnInfo(args[2], Integer.parseInt(args[3])));
+				shell = new Client(new ServerInfo(args[0],
+						Integer.parseInt(args[1])), new UDPConnInfo(args[2],
+						Integer.parseInt(args[3])));
 			} else if (3 == args.length) {
-				shell = new Client(new ServerInfo(args[0], RMIConstants.RMI_DEFAULT_PORT)
-						, new UDPConnInfo(args[1], Integer.parseInt(args[2])));
-
+				shell = new Client(new ServerInfo(args[0],
+						RMIConstants.RMI_DEFAULT_PORT), new UDPConnInfo(
+						args[1], Integer.parseInt(args[2])));
+			} else {
 				LogUtil.info(USAGE_HELP);
+				return;
 			}
 
 			shell.startShell();
@@ -174,14 +173,23 @@ public class Client {
 		} catch (IllegalIPException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalCommandException e) {
+			LogUtil.error("", e.getMessage());
+		} catch (ClientNullException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
-	private void startRMIClient()
-			throws MalformedURLException, RemoteException, NotBoundException {
+	private void startRMIClient() throws MalformedURLException,
+			RemoteException, NotBoundException {
 		client = (Communicate) Naming.lookup("rmi://" + serverInfo.getIp()
-				+ ":" + serverInfo.getPort() + "/" + RMIConstants.PUB_SUB_SERVICE);
+				+ ":" + serverInfo.getPort() + "/"
+				+ RMIConstants.PUB_SUB_SERVICE);
 	}
 
 }
