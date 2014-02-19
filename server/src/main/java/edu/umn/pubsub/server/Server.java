@@ -31,27 +31,6 @@ public class Server {
 	
 	public static void main(String[] args) {
 		String method = CLASS_NAME + ".main()";
-		
-	/*	UDPServer.getUDPServer(5105, UDPServerData.getInstance()).start();
-		LogUtil.log(method, "Started udp server");
-		String command = "Register;RMI;131.212.229.0;5105;PubSubService;1099";
-		try {
-			LogUtil.log(method, "Sending: " + command);
-			UDPClientUtil.send(RegisteryServerConfig.REGISTER_SERVER_ADDRESS, RegisteryServerConfig.REGISTER_SERVER_PORT, command);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		command = "GetList;RMI;128.101.35.178;5105";
-		try {
-			LogUtil.log(method, "Sending: " + command);
-			UDPClientUtil.send(RegisteryServerConfig.REGISTER_SERVER_ADDRESS, RegisteryServerConfig.REGISTER_SERVER_PORT, command);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
 		if(args.length != 2) {
 			LogUtil.log(method, "Invalid cli arguments. Usage server <server ip> <server rmi port>");
 			return;
