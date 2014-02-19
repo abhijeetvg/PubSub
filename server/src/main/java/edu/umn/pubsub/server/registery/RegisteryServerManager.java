@@ -128,7 +128,7 @@ public final class RegisteryServerManager {
 		}
 		String[] split = getListResult.split(commandDelimiter);
 		for(int i = 0; i < split.length; i = i + 3) {
-			if(split[i].equals(Server.getServerIp()) && split[i+2].equals(Server.getServerPort())) {
+			if(split[i].equals(Server.getServerIp())) {
 				// Do not add our own server
 				continue;
 			}
