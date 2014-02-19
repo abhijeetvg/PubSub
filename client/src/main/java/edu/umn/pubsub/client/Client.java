@@ -51,7 +51,7 @@ public class Client {
 	}
 
 	private void executeCmd(String cmdStr)
-			throws NumberFormatException, RemoteException, ClientNullException {
+			throws NumberFormatException, ClientNullException {
 
 		BaseCommand cmd;
 		try {
@@ -62,6 +62,8 @@ public class Client {
 			}
 		} catch (IllegalCommandException e) {
 			LogUtil.error("", e.getMessage());
+		} catch (RemoteException e) {
+			LogUtil.catchedRemoteException(e);
 		}
 	}
 

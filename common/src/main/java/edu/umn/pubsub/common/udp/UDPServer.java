@@ -60,7 +60,7 @@ public class UDPServer extends Thread {
 
 				udpData.process(data);
 			}
-
+			
 		} catch (SocketException e) {
 			LogUtil.info("Socket closed");
 		} catch (IOException e) {
@@ -68,6 +68,9 @@ public class UDPServer extends Thread {
 			e.printStackTrace();
 		} finally {
 			close();
+			synchronized (UDPServer.class) {
+				stop = true;
+			}
 		}
 
 	}
