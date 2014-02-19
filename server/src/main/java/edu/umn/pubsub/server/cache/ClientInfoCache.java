@@ -20,7 +20,6 @@ import edu.umn.pubsub.server.Server;
 public final class ClientInfoCache {
 	private static ClientInfoCache instance = null;
 	
-	private int numOfClients = 0;
 	// Data structures for holding client and subscription information
 	private final Set<ClientInfo> clients = new HashSet<ClientInfo>();
 	private final Map<Subscription, Set<ClientInfo>> subscriptionClientMap = new HashMap<Subscription, Set<ClientInfo>>();
@@ -29,7 +28,6 @@ public final class ClientInfoCache {
 		if(instance != null) {
 			throw new IllegalStateException();
 		}
-		numOfClients = 0;
 		// Singleton cache
 	}
 	
@@ -49,10 +47,9 @@ public final class ClientInfoCache {
 	 * @throws MaxClientsExceededException 
 	 */
 	public synchronized boolean addClient(ClientInfo client) throws MaxClientsExceededException {
-		if(numOfClients == Server.getMaxClients()) {
+		if(clients.size() == Server.getMaxClients()) {
 			throw new MaxClientsExceededException("Max number of clients(" +Server.getMaxClients()+") reached. Try again");
 		}
-		numOfClients++;
 		return clients.add(client);
 	}
 	
@@ -69,7 +66,6 @@ public final class ClientInfoCache {
 		for (Subscription subscription : keySet) {
 			subscriptionClientMap.get(subscription).remove(client);
 		}
-		numOfClients--;
 		return clients.remove(client);
 	}
 	
