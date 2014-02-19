@@ -25,6 +25,8 @@ public class RegisteryServerGetListPoller implements Runnable{
 			Set<ServerInfo> registeredServers = RegisteryServerManager.getInstance().getList();
 			if(registeredServers.isEmpty()) {
 				LogUtil.log(method, "No active servers present. Will try again after " + POLL_INTERVAL + "ms");
+				LogUtil.log(method, "Removing all currentSendable servers");
+				ServerInfoCache.getInstance().getSendableServers().clear();
 				sleep(POLL_INTERVAL);
 				continue;
 			}
