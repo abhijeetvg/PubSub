@@ -3,7 +3,10 @@ package edu.umn.pubsub.common.udp;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.Socket;
 import java.net.SocketException;
+
+import com.sun.xml.internal.ws.Closeable;
 
 import edu.umn.pubsub.common.constants.RegisteryServerConstants;
 import edu.umn.pubsub.common.util.LogUtil;
@@ -20,7 +23,7 @@ public class UDPServer extends Thread {
 	private static final String UDP_SERVER_NAME = "UDPServerThread";
 	private static final int MAX_ARTICLE_LENGTH = 1000;
 	private static boolean stop = true;
-	private DatagramSocket socket = null;
+	private static DatagramSocket socket = null;
 	private static UDPServer udpServer = null;
 	private UDPData udpData;
 	private UDPServer(int port, UDPData udpData) {
@@ -61,6 +64,8 @@ public class UDPServer extends Thread {
 				udpData.process(data);
 			}
 
+		} catch (SocketException e) {
+			LogUtil.info("Socket closed");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,12 +76,13 @@ public class UDPServer extends Thread {
 	}
 
 	public void close() {
-		if (null != socket)
+		if (null != socket && socket.isConnected())
 			socket.close();
 	}
 
 	public static synchronized void stopThread() {
 		stop = false;
+		socket.close();
 	}
 
 }
