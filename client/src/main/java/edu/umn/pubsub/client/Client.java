@@ -15,6 +15,7 @@ import edu.umn.pubsub.client.cli.Heartbeats;
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
 import edu.umn.pubsub.client.exceptions.IllegalCommandException;
+import edu.umn.pubsub.client.udp.UDPClientData;
 import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.config.RegisteryServerConfig;
 import edu.umn.pubsub.common.constants.RMIConstants;
@@ -22,6 +23,8 @@ import edu.umn.pubsub.common.exception.IllegalIPException;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.server.ServerInfo;
 import edu.umn.pubsub.common.udp.PrintLock;
+import edu.umn.pubsub.common.udp.UDPData;
+import edu.umn.pubsub.common.udp.UDPServer;
 import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.util.StringUtil;
 import edu.umn.pubsub.common.util.UDPClientUtil;
@@ -38,8 +41,10 @@ public class Client {
 	private ServerInfo serverInfo;
 	private UDPConnInfo conInfo;
 
+	public static boolean isJoined = false;
+	
 	private static final String CMD_PROMPT = "\nPubSub-Client-1.0$ ";
-	private static final String GOOD_BYE_MSG = "Good Bye! ";
+	private static final String GOOD_BYE_MSG = "Good Bye! Press Ctrl-C to exit.";
 
 	private static final String USAGE_HELP = "arguments: <rmi_server_host> <rmi_server_port> <udp_host> <udp_host>";
 
@@ -149,21 +154,31 @@ public class Client {
 	public static void main(String[] args) {
 
 		try {
+			
 
+			ServerInfo sInfo = null;
+			
 			Client shell = null;
 			if (4 == args.length) {
-				shell = new Client(new ServerInfo(args[0],
-						Integer.parseInt(args[1])), new UDPConnInfo(args[2],
+				sInfo = new ServerInfo(args[0],
+						Integer.parseInt(args[1]));
+				shell = new Client(sInfo, new UDPConnInfo(args[2],
 						Integer.parseInt(args[3])));
 			} else if (3 == args.length) {
-				shell = new Client(new ServerInfo(args[0],
-						RMIConstants.RMI_DEFAULT_PORT), new UDPConnInfo(
+				sInfo = new ServerInfo(args[0],
+						RMIConstants.RMI_DEFAULT_PORT);
+				shell = new Client(sInfo, new UDPConnInfo(
 						args[1], Integer.parseInt(args[2])));
 			} else {
 				LogUtil.info(USAGE_HELP);
 				return;
 			}
 
+			UDPData udpData = new UDPClientData();
+			UDPServer.getUDPServer(sInfo.getPort(), udpData)
+				.start();
+
+			
 			shell.startShell();
 
 		} catch (RemoteException e) {

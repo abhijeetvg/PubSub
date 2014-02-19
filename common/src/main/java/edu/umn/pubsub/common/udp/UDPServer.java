@@ -19,8 +19,7 @@ public class UDPServer extends Thread {
 
 	private static final String UDP_SERVER_NAME = "UDPServerThread";
 	private static final int MAX_ARTICLE_LENGTH = 1000;
-	private static boolean stop = true;
-	private static DatagramSocket socket = null;
+	private DatagramSocket socket = null;
 	private static UDPServer udpServer = null;
 	private UDPData udpData;
 	private UDPServer(int port, UDPData udpData) {
@@ -45,7 +44,7 @@ public class UDPServer extends Thread {
 	public void run() {
 
 		try {
-			while (stop) {
+			while (true) {
 
 				byte[] buf = new byte[MAX_ARTICLE_LENGTH];
 
@@ -68,20 +67,11 @@ public class UDPServer extends Thread {
 			e.printStackTrace();
 		} finally {
 			close();
-			synchronized (UDPServer.class) {
-				stop = true;
-			}
 		}
 
 	}
 
 	public void close() {
-		if (null != socket && socket.isConnected())
-			socket.close();
-	}
-
-	public static synchronized void stopThread() {
-		stop = false;
 		if (null != socket && socket.isConnected())
 			socket.close();
 	}

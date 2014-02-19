@@ -2,13 +2,11 @@ package edu.umn.pubsub.client.cli;
 
 import java.rmi.RemoteException;
 
+import edu.umn.pubsub.client.Client;
 import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
-import edu.umn.pubsub.client.udp.UDPClientData;
 import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.rmi.Communicate;
-import edu.umn.pubsub.common.udp.UDPData;
-import edu.umn.pubsub.common.udp.UDPServer;
 
 /**
  * Used to invoke Join and Leave RMI method calls. Method calls that this command
@@ -41,6 +39,8 @@ public class JoinLeave extends BaseCommand {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * TODO: Synchronize isJoined!
 	 */
 	@Override
 	public boolean execute(Communicate client) 
@@ -52,10 +52,9 @@ public class JoinLeave extends BaseCommand {
 
 		//Instantiate UDP server to handle these requests
 		if (cmdType == CommandConstants.DO_COMMAND) {
-			UDPData udpData = new UDPClientData();
-			UDPServer.getUDPServer(getPort(), udpData)
-				.start();
 
+			Client.isJoined = true;
+			
 			if (isServerCall) {
 				return client.JoinServer(getHost(), getPort());
 			}
@@ -65,19 +64,12 @@ public class JoinLeave extends BaseCommand {
 
 		if (cmdType == CommandConstants.UNDO_COMMAND) {
 
-			UDPServer.stopThread();
-			
 			if (isServerCall) {
 				return client.LeaveServer(getHost(), getPort());
 			}
 			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			Client.isJoined = false;
+			
 			return client.Leave(getHost(), getPort());
 		}
 

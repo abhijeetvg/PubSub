@@ -1,5 +1,6 @@
 package edu.umn.pubsub.client.udp;
 
+import edu.umn.pubsub.client.Client;
 import edu.umn.pubsub.common.udp.PrintLock;
 import edu.umn.pubsub.common.udp.UDPData;
 
@@ -20,7 +21,12 @@ public class UDPClientData implements UDPData{
 		//TODO: Maybe write it into a file, so it does not have to be 
 		//synchronized with client shell.
 		synchronized (PrintLock.printLock) {
-			System.out.println("\n\n\tComing in hot, watch out...");
+			
+			if (!Client.isJoined) {
+				return;
+			}
+			
+			System.out.println("\n\n\t**Interrupted, got article from Server**");
 			System.out.println("\t" + data);
 		}
 	}
