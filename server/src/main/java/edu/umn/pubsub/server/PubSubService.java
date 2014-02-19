@@ -10,6 +10,7 @@ import edu.umn.pubsub.common.exception.IllegalArticleException;
 import edu.umn.pubsub.common.exception.IllegalArticleTypeException;
 import edu.umn.pubsub.common.exception.IllegalIPException;
 import edu.umn.pubsub.common.exception.IllegalSubscriptionException;
+import edu.umn.pubsub.common.exception.MaxArticleLengthExceededException;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.server.ServerInfo;
 
@@ -103,6 +104,8 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 			throw new RemoteException("Invalid IP",e);
 		} catch (IllegalArticleTypeException e) {
 			throw new RemoteException("Invalid Article Type",e);
+		} catch (MaxArticleLengthExceededException e) {
+			throw new RemoteException("Article length exceeded",e);
 		}
 	}
 
@@ -117,6 +120,8 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 			throw new RemoteException("Invalid IP",e);
 		} catch (IllegalArticleTypeException e) {
 			throw new RemoteException("Invalid Article Type",e);
+		} catch (MaxArticleLengthExceededException e) {
+			throw new RemoteException("Article length exceeded",e);
 		}
 	}
 
@@ -131,6 +136,8 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 			throw new RemoteException("Invalid IP",e);
 		} catch (IllegalArticleTypeException e) {
 			throw new RemoteException("Invalid Article Type",e);
+		} catch (MaxArticleLengthExceededException e) {
+			throw new RemoteException("Article length exceeded",e);
 		}
 	}
 
@@ -141,10 +148,12 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 			return clientManager.Unsubscribe(new ClientInfo(ip,port), new Subscription(subscription));
 		} catch (IllegalSubscriptionException e) {
 			throw new RemoteException("Invalid Subscription", e);
-		}catch (IllegalIPException e) {
+		} catch (IllegalIPException e) {
 			throw new RemoteException("Invalid IP",e);
 		} catch (IllegalArticleTypeException e) {
 			throw new RemoteException("Invalid Article Type",e);
+		} catch (MaxArticleLengthExceededException e) {
+			throw new RemoteException("Article length exceeded",e);
 		}
 	}
 }

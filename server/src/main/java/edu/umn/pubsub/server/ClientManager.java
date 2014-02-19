@@ -8,6 +8,7 @@ import edu.umn.pubsub.common.client.ClientInfo;
 import edu.umn.pubsub.common.content.Article;
 import edu.umn.pubsub.common.content.Subscription;
 import edu.umn.pubsub.common.exception.IllegalClientException;
+import edu.umn.pubsub.common.exception.MaxClientsExceededException;
 import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.util.UDPClientUtil;
 import edu.umn.pubsub.server.cache.ClientInfoCache;
@@ -43,7 +44,11 @@ public final class ClientManager {
 	public boolean Join(ClientInfo client) throws RemoteException {
 		String method = CLASS_NAME + ".Join()";
 		LogUtil.log(method, "Joining : "+ client);
-		return ClientInfoCache.getInstance().addClient(client);
+		try {
+			return ClientInfoCache.getInstance().addClient(client);
+		} catch (MaxClientsExceededException e) {
+			throw new RemoteException("Max clients reached on server. Try again.", e);
+		}
 	}
 
 	/**

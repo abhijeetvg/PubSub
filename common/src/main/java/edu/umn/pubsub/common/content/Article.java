@@ -4,6 +4,7 @@ import edu.umn.pubsub.common.constants.ArticleConstants;
 import edu.umn.pubsub.common.constants.Type;
 import edu.umn.pubsub.common.exception.IllegalArticleException;
 import edu.umn.pubsub.common.exception.IllegalArticleTypeException;
+import edu.umn.pubsub.common.exception.MaxArticleLengthExceededException;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
 /**
@@ -18,9 +19,13 @@ public final class Article {
 	private String org;
 	private String contents;
 	
-	public Article(String articleStr) throws IllegalArticleException, IllegalArticleTypeException{
+	public Article(String articleStr) throws IllegalArticleException, IllegalArticleTypeException, MaxArticleLengthExceededException{
 		if(!ContentValidator.isValidArticle(articleStr)) {
 			throw new IllegalArticleException("Invalid article structure: "+ articleStr);
+		}
+		int length = articleStr.length();
+		if(length > ArticleConstants.MAX_ARTICLE_LENGTH) {
+			throw new MaxArticleLengthExceededException("Article length: "+ length + "is greater than max: " + ArticleConstants.MAX_ARTICLE_LENGTH);
 		}
 		String[] split = articleStr.split(ArticleConstants.ARTICLE_DELIMITER,-1);
 		if(!ContentValidator.isValidType(split[0])) {

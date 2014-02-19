@@ -25,8 +25,9 @@ import edu.umn.pubsub.server.udp.UDPServerData;
 public class Server {
 	private static final String CLASS_NAME = Server.class.getSimpleName();
 	private static String serverIp = null;
-	private static final int serverUDPPort = 5105;
+	private static final int SERVER_UDP_PORT = 5105;
 	private static int rmiServerPort = -1;
+	private static final int MAXCLIENT = 5; 
 	
 	public static void main(String[] args) {
 		String method = CLASS_NAME + ".main()";
@@ -74,7 +75,7 @@ public class Server {
 		LogUtil.log(method, "DONE Registering to Registery Server");
 		
 		LogUtil.log(method, "Starting UDP Server");
-		UDPServer.getUDPServer(serverUDPPort, UDPServerData.getInstance()).start();
+		UDPServer.getUDPServer(SERVER_UDP_PORT, UDPServerData.getInstance()).start();
 		LogUtil.log(method, "DONE Starting UDP Server");
 		
 		LogUtil.log(method, "Starting the Get list poller thread");
@@ -105,7 +106,11 @@ public class Server {
 	}
 	
 	public static int getServerPort() {
-		return serverUDPPort;
+		return SERVER_UDP_PORT;
+	}
+	
+	public static int getMaxClients() {
+		return MAXCLIENT;
 	}
 	
 	public static int getRMIServerPort() {

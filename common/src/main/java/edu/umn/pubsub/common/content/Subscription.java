@@ -4,6 +4,7 @@ import edu.umn.pubsub.common.constants.ArticleConstants;
 import edu.umn.pubsub.common.constants.Type;
 import edu.umn.pubsub.common.exception.IllegalArticleTypeException;
 import edu.umn.pubsub.common.exception.IllegalSubscriptionException;
+import edu.umn.pubsub.common.exception.MaxArticleLengthExceededException;
 import edu.umn.pubsub.common.util.StringUtil;
 import edu.umn.pubsub.common.validator.ContentValidator;
 
@@ -24,9 +25,13 @@ public final class Subscription {
 		this.org = org;
 	}
 	
-	public Subscription(String subscriptionStr) throws IllegalSubscriptionException, IllegalArticleTypeException{
+	public Subscription(String subscriptionStr) throws IllegalSubscriptionException, IllegalArticleTypeException, MaxArticleLengthExceededException{
 		if(!ContentValidator.isValidSubscription(subscriptionStr)) {
 			throw new IllegalSubscriptionException("Invalid subscription: " + subscriptionStr);
+		}
+		int length = subscriptionStr.length();
+		if(length > ArticleConstants.MAX_ARTICLE_LENGTH) {
+			throw new MaxArticleLengthExceededException("Subscription length: "+ length + "is greater than max: " + ArticleConstants.MAX_ARTICLE_LENGTH);
 		}
 		String[] split = subscriptionStr.split(ArticleConstants.ARTICLE_DELIMITER,-1);
 		if(!ContentValidator.isValidType(split[0])) {

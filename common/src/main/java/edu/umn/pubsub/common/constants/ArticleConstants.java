@@ -11,4 +11,5 @@ public final class ArticleConstants {
 	}
 	
 	public static final String ARTICLE_DELIMITER = ";";
+	public static final int MAX_ARTICLE_LENGTH = 120;
 }
