@@ -53,14 +53,22 @@ public class Server {
 		}
 		LogUtil.log(method, "DONE Registering to Registery Server");
 		
-		LogUtil.log(method, "Starting UDP Server");
-		UDPServer.getUDPServer(SERVER_UDP_PORT, UDPServerData.getInstance()).start();
-		LogUtil.log(method, "DONE Starting UDP Server");
+		try{
+			LogUtil.log(method, "Starting UDP Server");
+			UDPServer.getUDPServer(SERVER_UDP_PORT, UDPServerData.getInstance()).start();
+			LogUtil.log(method, "DONE Starting UDP Server");
+		}catch (Exception ex) {
+			LogUtil.log(method, "FATAL got exception in UDP server thread. Exception: " + ex.getMessage());
+		}
 		
-		LogUtil.log(method, "Starting the Get list poller thread");
-		Thread thread = new Thread(new RegisteryServerGetListPoller());
-		thread.start();
-		LogUtil.log(method, "DONE Starting the Get list poller thread");
+		try {
+			LogUtil.log(method, "Starting the Get list poller thread");
+			Thread thread = new Thread(new RegisteryServerGetListPoller());
+			thread.start();
+			LogUtil.log(method, "DONE Starting the Get list poller thread");
+		}catch(Exception ex) {
+			LogUtil.log(method, "FATAL got exception in Registery server thread. Exception: " + ex.getMessage());
+		}
 		
 		LogUtil.log(method, "Starting server on  " + serverIp);
 		System.setProperty("java.rmi.server.hostname", serverIp);

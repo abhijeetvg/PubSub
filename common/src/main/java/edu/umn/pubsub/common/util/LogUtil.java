@@ -23,7 +23,7 @@ public final class LogUtil {
 	}
 	
 	public static void log(String method, String message) {
-		System.out.println(currentTime() + "\t" + method + "\t\t" + message);
+		System.out.printf("%s\t%-35s\t%s\n",currentTime(),method,message);
 	}
 	
 	public static void info(String message) {

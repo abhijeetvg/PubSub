@@ -39,13 +39,13 @@ public final class ServerManager {
 	}
 
 	public boolean JoinServer(ServerInfo serverInfo) throws RemoteException {
-		String method = CLASS_NAME  + "JoinServer()";
+		String method = CLASS_NAME  + ".JoinServer()";
 		LogUtil.log(method, "Joining server: " + serverInfo);
 		return ServerInfoCache.getInstance().addRecievableServer(serverInfo);
 	}
 
 	public boolean LeaveServer(ServerInfo serverInfo) throws RemoteException {
-		String method = CLASS_NAME  + "LeaveServer()";
+		String method = CLASS_NAME  + ".LeaveServer()";
 		LogUtil.log(method, "Leaving server: " + serverInfo);
 		try {
 			return ServerInfoCache.getInstance().removeReceivableServer(serverInfo);
@@ -56,7 +56,7 @@ public final class ServerManager {
 
 	public boolean PublishServer(ServerInfo senderServerInfo, Article article)
 			throws RemoteException {
-		String method = CLASS_NAME  + "PublishServer()";
+		String method = CLASS_NAME  + ".PublishServer()";
 		LogUtil.log(method, "Got article from server: " + senderServerInfo);
 		LogUtil.log(method, "Publishing article: " + article + " to clients");
 		ClientManager.getInstance().Publish(article);
@@ -65,7 +65,7 @@ public final class ServerManager {
 	
 	public boolean PublishServer(Article article)
 			throws RemoteException {
-		String method = CLASS_NAME  + "PublishServer()";
+		String method = CLASS_NAME  + ".PublishServer()";
 		Set<ServerInfo> servers = ServerInfoCache.getInstance().getSendableServers();
 		if(servers.isEmpty()) {
 			LogUtil.log(method, "No servers to publish");
