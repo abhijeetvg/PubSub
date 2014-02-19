@@ -3,6 +3,7 @@ package edu.umn.pubsub.client.cli;
 import java.rmi.RemoteException;
 
 import edu.umn.pubsub.common.rmi.Communicate;
+import edu.umn.pubsub.common.util.LogUtil;
 
 /**
  * Used to check if server is alive every 5s.
@@ -34,11 +35,12 @@ public class Heartbeats implements Runnable {
 			
 			//client.Leave(IP, Port)
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.print("Ping Err: ");
+			LogUtil.catchedRemoteException(e);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			LogUtil.info("Ping Stopped.");
 		}
 
 	}

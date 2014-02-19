@@ -1,5 +1,6 @@
 package edu.umn.pubsub.common.util;
 
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,7 +25,7 @@ public final class LogUtil {
 	}
 	
 	public static void log(String method, String message) {
-		System.out.println(currentTime() + "\t" + method + "\t" + message);
+		System.out.println(currentTime() + "\t" + method + "\t\t" + message);
 	}
 	
 	public static void info(String message) {
@@ -34,5 +35,14 @@ public final class LogUtil {
 	public static void error(String method, String message) {
 		System.out.print("ERROR: ");
 		LogUtil.log(method, message);
+	}
+
+	public static void catchedRemoteException(RemoteException e) {
+		if (null == e.getCause()) {
+			LogUtil.error("Remote Error: ", e.getMessage());
+		} else {
+			LogUtil.error("Remote Error: ", e.getCause().getMessage());
+		}
+
 	}
 }

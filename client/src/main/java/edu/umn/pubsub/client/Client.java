@@ -18,7 +18,6 @@ import edu.umn.pubsub.client.udp.UDPConnInfo;
 import edu.umn.pubsub.common.constants.RMIConstants;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.udp.PrintLock;
-import edu.umn.pubsub.common.udp.UDPServer;
 import edu.umn.pubsub.common.util.LogUtil;
 
 /**
@@ -137,8 +136,7 @@ public class Client {
 			shell.startShell();
 
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.catchedRemoteException(e);
 		} catch (NotBoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
