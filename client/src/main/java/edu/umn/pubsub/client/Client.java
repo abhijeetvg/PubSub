@@ -89,6 +89,10 @@ public class Client {
 		// Start heart beat thread
 		Thread t = new Thread(new Heartbeats(client));
 		t.start();
+		
+		UDPData udpData = new UDPClientData();
+		UDPServer.getUDPServer(conInfo.getPort(), udpData)
+			.start();
 
 		try {
 
@@ -173,11 +177,6 @@ public class Client {
 				LogUtil.info(USAGE_HELP);
 				return;
 			}
-
-			UDPData udpData = new UDPClientData();
-			UDPServer.getUDPServer(sInfo.getPort(), udpData)
-				.start();
-
 			
 			shell.startShell();
 
