@@ -16,6 +16,10 @@ public class Heartbeats implements Runnable {
 	private static final int HEARTBEAT_INTERVEL = 5000;
 	private static boolean notExit = true;
 
+	public Heartbeats(Communicate client2) {
+		this.client = client2;
+	}
+
 	public static synchronized void setNotExit(boolean notExit) {
 		Heartbeats.notExit = notExit;
 	}

@@ -77,7 +77,7 @@ public class Client {
 		String cmd;
 
 		//Start heart beat thread
-		Thread t = new Thread(new Heartbeats());
+		Thread t = new Thread(new Heartbeats(client));
 		t.start();
 
 		try {
