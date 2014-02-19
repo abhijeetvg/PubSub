@@ -51,14 +51,18 @@ public class Client {
 	}
 
 	private void executeCmd(String cmdStr)
-			throws IllegalCommandException, NumberFormatException, RemoteException, ClientNullException {
+			throws NumberFormatException, RemoteException, ClientNullException {
 
-		BaseCommand cmd = CommandFactory.getCommand(cmdStr, conInfo);
-
-		if (!cmd.execute(client)) {
-			LogUtil.info(CommandConstants.ERR_COMMAND_EXEC_FAILED);
+		BaseCommand cmd;
+		try {
+			cmd = CommandFactory.getCommand(cmdStr, conInfo);
+			
+			if (!cmd.execute(client)) {
+				LogUtil.info(CommandConstants.ERR_COMMAND_EXEC_FAILED);
+			}
+		} catch (IllegalCommandException e) {
+			LogUtil.error("", e.getMessage());
 		}
-
 	}
 
 	/**
@@ -71,7 +75,7 @@ public class Client {
 	 * @throws NumberFormatException
 	 */
 	public void startShell() throws IOException
-			, NumberFormatException, IllegalCommandException, ClientNullException {
+			, NumberFormatException, ClientNullException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String cmd;
 
@@ -177,8 +181,6 @@ public class Client {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IllegalCommandException e) {
-			LogUtil.error("", e.getMessage());
 		} catch (ClientNullException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

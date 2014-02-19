@@ -79,7 +79,8 @@ public class UDPServer extends Thread {
 
 	public static synchronized void stopThread() {
 		stop = false;
-		socket.close();
+		if (null != socket && socket.isConnected())
+			socket.close();
 	}
 
 }
