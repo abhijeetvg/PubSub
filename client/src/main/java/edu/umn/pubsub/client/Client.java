@@ -154,8 +154,9 @@ public class Client {
 			} else if (3 == args.length) {
 				shell = new Client(new ServerInfo(args[0], RMIConstants.RMI_DEFAULT_PORT)
 						, new UDPConnInfo(args[1], Integer.parseInt(args[2])));
-
+			} else {
 				LogUtil.info(USAGE_HELP);
+				return;
 			}
 
 			shell.startShell();
