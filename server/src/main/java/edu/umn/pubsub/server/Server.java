@@ -3,6 +3,7 @@ package edu.umn.pubsub.server;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 
 import edu.umn.pubsub.common.constants.RMIConstants;
 import edu.umn.pubsub.common.udp.UDPServer;
@@ -86,6 +87,7 @@ public class Server {
 		LogUtil.log(method, "Binding " + RMIConstants.PUB_SUB_SERVICE);
 		// Bind the PubSubService RMI Registry
 		try {
+			LocateRegistry.createRegistry(getRMIServerPort());
 			Naming.rebind(RMIConstants.PUB_SUB_SERVICE, PubSubService.getInstance());
 		} catch (RemoteException e) {
 			LogUtil.log(method, "Got exception " + e.getMessage() + ". Exiting.");
