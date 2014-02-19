@@ -134,7 +134,7 @@ public final class RegisteryServerManager {
 			return activeServers;
 		}
 		String[] split = getListResult.split(commandDelimiter);
-		if(split == null) {
+		if(split == null || split.length < 3 ) {
 			LogUtil.log(method, "Cannot split " + getListResult+".Returning.");
 			return activeServers;
 		}
