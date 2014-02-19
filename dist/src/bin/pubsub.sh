@@ -30,9 +30,11 @@ export CLASSPATH;
 
 if [ "$1" = "server" ]; then
   echo Starting Server
+  shift 1
   java -D'java.security.policy=${policy_file}' -cp $CLASSPATH edu.umn.pubsub.server.Server "$@"
 elif [ "$1" = "client" ]; then
   echo Starting Client
+  shift 1
   java -D'java.security.policy=${policy_file}' -cp $CLASSPATH edu.umn.pubsub.client.Client "$@"
 else
   usage
