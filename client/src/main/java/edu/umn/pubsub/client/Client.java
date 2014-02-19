@@ -107,8 +107,9 @@ public class Client {
 														RegisteryServerConfig.REGISTER_SERVER_PORT,
 														getListCommand),
 										serverInfo.getIp());
-
-						serverInfo = serverInfoList.iterator().next();
+						if (0 != serverInfoList.size()) {
+							serverInfo = serverInfoList.iterator().next();
+						}
 					}
 
 					if (cmd.trim().equalsIgnoreCase("exit")

@@ -38,7 +38,10 @@ public final class StringUtil {
 			return activeServers;
 		}
 		String[] split = getListResult.split(commandDelimiter);
-		for(int i = 0; i < split.length; i = i + 3) {
+		if (null == split) {
+			return activeServers;
+		}
+		for(int i = 0, j = 2; j < split.length; j = i + 3) {
 			if(split[i].equals(serverIp)) {
 				// Do not add our own server
 				continue;
@@ -50,6 +53,8 @@ public final class StringUtil {
 			} catch (IllegalIPException e) {
 				LogUtil.info("Got Invalid IP: " + split[i] + " in getList");
 			}
+			
+			i = i + 3;
 		}
 		return activeServers;
 	}
