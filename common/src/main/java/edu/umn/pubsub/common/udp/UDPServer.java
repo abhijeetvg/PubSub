@@ -3,10 +3,7 @@ package edu.umn.pubsub.common.udp;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Socket;
 import java.net.SocketException;
-
-import com.sun.xml.internal.ws.Closeable;
 
 import edu.umn.pubsub.common.constants.RegisteryServerConstants;
 import edu.umn.pubsub.common.util.LogUtil;

@@ -1,4 +1,4 @@
-package edu.umn.pubsub.server.config;
+package edu.umn.pubsub.common.config;
 
 /**
  * Config for Registery Server

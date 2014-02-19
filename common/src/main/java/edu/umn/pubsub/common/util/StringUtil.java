@@ -1,6 +1,10 @@
 package edu.umn.pubsub.common.util;
 
-import java.util.StringTokenizer;
+import java.util.HashSet;
+import java.util.Set;
+
+import edu.umn.pubsub.common.exception.IllegalIPException;
+import edu.umn.pubsub.common.server.ServerInfo;
 
 /**
  * General util methods for string manipulation
@@ -25,4 +29,29 @@ public final class StringUtil {
 		return string.split(" ")[0];
 	}
 	
+	public static Set<ServerInfo> parseGetListResult(String getListResult, String serverIp) {
+		//String method = ".parseGetListResult()";
+		final String commandDelimiter = ";";
+		Set<ServerInfo> activeServers = new HashSet<ServerInfo>();
+		if(getListResult == null) {
+			LogUtil.info("Got null result in getList");
+			return activeServers;
+		}
+		String[] split = getListResult.split(commandDelimiter);
+		for(int i = 0; i < split.length; i = i + 3) {
+			if(split[i].equals(serverIp)) {
+				// Do not add our own server
+				continue;
+			}
+			try {
+				activeServers.add(new ServerInfo(split[i], split[i+1], Integer.parseInt(split[i+2])));
+			} catch (NumberFormatException e) {
+				LogUtil.info("Got Invalid port: " + split[i+2] + " in getList");
+			} catch (IllegalIPException e) {
+				LogUtil.info("Got Invalid IP: " + split[i] + " in getList");
+			}
+		}
+		return activeServers;
+	}
+
 }

@@ -4,8 +4,6 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import sun.util.logging.resources.logging;
-
 /**
  * Methods for logging purposes.
  * The methods will sys out the messages along with different attributes like timestamp.

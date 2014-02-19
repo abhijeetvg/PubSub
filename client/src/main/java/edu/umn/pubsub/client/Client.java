@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Set;
 
 import edu.umn.pubsub.client.cli.BaseCommand;
 import edu.umn.pubsub.client.cli.CommandFactory;
@@ -15,10 +16,14 @@ import edu.umn.pubsub.client.constants.CommandConstants;
 import edu.umn.pubsub.client.exceptions.ClientNullException;
 import edu.umn.pubsub.client.exceptions.IllegalCommandException;
 import edu.umn.pubsub.client.udp.UDPConnInfo;
+import edu.umn.pubsub.common.config.RegisteryServerConfig;
 import edu.umn.pubsub.common.constants.RMIConstants;
 import edu.umn.pubsub.common.rmi.Communicate;
+import edu.umn.pubsub.common.server.ServerInfo;
 import edu.umn.pubsub.common.udp.PrintLock;
 import edu.umn.pubsub.common.util.LogUtil;
+import edu.umn.pubsub.common.util.StringUtil;
+import edu.umn.pubsub.common.util.UDPClientUtil;
 
 /**
  * RMI Client, shell interface.
@@ -29,7 +34,7 @@ import edu.umn.pubsub.common.util.LogUtil;
 public class Client {
 
 	private Communicate client;
-
+	private String rmiServerHost;
 	private UDPConnInfo conInfo;
 	
 	private static final String CMD_PROMPT = "\nPubSub-Client-1.0$ ";
@@ -37,8 +42,10 @@ public class Client {
 
 	private static final String USAGE_HELP = "arguments: <rmi_server_host> <udp_host> <udp_host>";
 
-	public Client(Communicate client, UDPConnInfo conInfo) {
-		this.client = client;
+	public Client(String serverH, UDPConnInfo conInfo)
+			throws MalformedURLException, RemoteException, NotBoundException {
+		rmiServerHost = serverH;
+		startRMIClient();
 		this.conInfo = conInfo;
 	}
 
@@ -93,6 +100,22 @@ public class Client {
 						continue;
 					}
 
+					//optional feature
+					if (t.isAlive()) {
+						String commandDelimiter = ";";
+						String getListCommand = "GetList" + commandDelimiter 
+								+ "RMI" + commandDelimiter
+								+ conInfo.getHost() + commandDelimiter 
+								+ conInfo.getPort();
+						Set<ServerInfo> serverInfo = StringUtil.parseGetListResult(
+						UDPClientUtil.getResponse(RegisteryServerConfig.REGISTER_SERVER_ADDRESS
+								, RegisteryServerConfig.REGISTER_SERVER_PORT
+								, getListCommand), rmiServerHost);
+
+						rmiServerHost = serverInfo.iterator().next().getIp();
+
+					}
+
 					if (cmd.trim().equalsIgnoreCase("exit")
 							|| cmd.trim().equalsIgnoreCase("quit")) {
 						break;
@@ -128,10 +151,7 @@ public class Client {
 				LogUtil.info(USAGE_HELP);
 			}
 
-			Communicate client = (Communicate) Naming.lookup("rmi://" + args[0]
-					+ "/" + RMIConstants.PUB_SUB_SERVICE);
-
-			Client shell = new Client(client, new UDPConnInfo(args[1]
+			Client shell = new Client(args[0], new UDPConnInfo(args[1]
 					, Integer.parseInt(args[2])));
 			shell.startShell();
 
@@ -145,6 +165,12 @@ public class Client {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void startRMIClient()
+			throws MalformedURLException, RemoteException, NotBoundException {
+		client = (Communicate) Naming.lookup("rmi://" + rmiServerHost
+				+ "/" + RMIConstants.PUB_SUB_SERVICE);
 	}
 
 }
