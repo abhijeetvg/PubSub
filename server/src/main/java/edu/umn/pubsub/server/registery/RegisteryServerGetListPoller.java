@@ -64,6 +64,7 @@ public class RegisteryServerGetListPoller implements Runnable{
 				LogUtil.log(method, "Joining server: " + serverInfo);
 				try {
 					client.JoinServer(Server.getServerIp(), Server.getServerPort());
+					ServerInfoCache.getInstance().addSendableServer(serverInfo);
 				} catch (RemoteException e) {
 					LogUtil.log(method, "Got Exception: " + e.getCause().getMessage() + ". Trying next server.");
 					continue;
