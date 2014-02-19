@@ -102,7 +102,7 @@ public class Client {
 					}
 
 					//optional feature
-					if (t.isAlive()) {
+					if (!t.isAlive()) {
 						String commandDelimiter = ";";
 						String getListCommand = "GetList" + commandDelimiter 
 								+ "RMI" + commandDelimiter
