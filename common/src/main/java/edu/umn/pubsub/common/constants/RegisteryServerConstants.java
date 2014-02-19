@@ -7,4 +7,5 @@ public final class RegisteryServerConstants {
 	}
 	
 	public static final String HEARTBEAT = "heartbeat";
+	public static final String NOT_REGISTERED_ERROR = "Your server did not register to registry-server.";
 }

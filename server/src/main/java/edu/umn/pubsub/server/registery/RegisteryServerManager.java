@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.umn.pubsub.common.config.RegisteryServerConfig;
 import edu.umn.pubsub.common.constants.RMIConstants;
+import edu.umn.pubsub.common.constants.RegisteryServerConstants;
 import edu.umn.pubsub.common.exception.IllegalIPException;
 import edu.umn.pubsub.common.server.ServerInfo;
 import edu.umn.pubsub.common.util.LogUtil;
 import edu.umn.pubsub.common.util.UDPClientUtil;
 import edu.umn.pubsub.server.Server;
-import edu.umn.pubsub.server.config.RegisteryServerConfig;
 
 /**
  * This is singleton manager class for managing requests to the RegistryServer.
@@ -116,6 +117,12 @@ public final class RegisteryServerManager {
 		} catch (IOException e) {
 			LogUtil.log(method, "Got IOException while sending GetListCommand to Registry Server");
 		}
+		if(RegisteryServerConstants.NOT_REGISTERED_ERROR.equals(response)) {
+			// server registration is void. register again.
+			LogUtil.log(method, "Server not registered will register first and then send the getList again after some time.");
+			register();
+			return new HashSet<ServerInfo>();
+		}
 		return parseGetListResult(response);
 	}
 
@@ -127,6 +134,10 @@ public final class RegisteryServerManager {
 			return activeServers;
 		}
 		String[] split = getListResult.split(commandDelimiter);
+		if(split == null) {
+			LogUtil.log(method, "Cannot split " + getListResult+".Returning.");
+			return activeServers;
+		}
 		for(int i = 0; i < split.length; i = i + 3) {
 			if(split[i].equals(Server.getServerIp())) {
 				// Do not add our own server
