@@ -13,6 +13,7 @@ import edu.umn.pubsub.common.exception.IllegalSubscriptionException;
 import edu.umn.pubsub.common.exception.MaxArticleLengthExceededException;
 import edu.umn.pubsub.common.rmi.Communicate;
 import edu.umn.pubsub.common.server.ServerInfo;
+import edu.umn.pubsub.common.util.LogUtil;
 
 /**
  * This is a singleton PubSubService which manages all the Client subscriptions and other group server connections.
@@ -25,6 +26,7 @@ import edu.umn.pubsub.common.server.ServerInfo;
 public final class PubSubService extends UnicastRemoteObject implements Communicate {
 	
 	private static final long serialVersionUID = 1L;
+	private static final String CLASS_NAME = PubSubService.class.getSimpleName();
 	private static PubSubService instance;
 	private final ClientManager clientManager;
 	private final ServerManager serverManager;
@@ -36,14 +38,14 @@ public final class PubSubService extends UnicastRemoteObject implements Communic
 	}
 	
 	public static PubSubService getInstance() {
+		String method = CLASS_NAME +".getInstance()";
 		if(instance == null) {
 			synchronized (PubSubService.class) {	
 				if(instance == null) {
 					try {
 						instance = new PubSubService();
 					} catch (RemoteException e) {
-						// TODO Handle this exception
-						e.printStackTrace();
+						LogUtil.log(method, "FATAL got remote exception in PubSubService.");
 					}
 				}
 			}

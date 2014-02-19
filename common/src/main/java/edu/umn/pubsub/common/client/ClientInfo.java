@@ -20,7 +20,6 @@ public final class ClientInfo {
 	 */
 	public ClientInfo(String ip, int port) throws IllegalIPException{
 		if(!ContentValidator.isValidIp(ip)) {
-			// TODO prashant remove hardcoding
 			throw new IllegalIPException("Invalid Ip: " + ip);
 		}
 		this.ip = ip;
