@@ -93,8 +93,12 @@
                         </copy>
 
                         <tar destfile="target/pubsub-${project.version}.tar.gz" compression="gzip">
+                        <tarfileset dir="target/pubsub-${project.version}" prefix="pubsub-${project.version}" filemode="755">
+                          <include name="**/*.sh" />
+                        </tarfileset>
                         <tarfileset dir="target/pubsub-${project.version}" prefix="pubsub-${project.version}">
                           <include name="**/*"/>
+                          <exclude name="**/*.sh"/>
                         </tarfileset>
                         </tar>
 
